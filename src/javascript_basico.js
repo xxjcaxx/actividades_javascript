@@ -1,6 +1,7 @@
 export {createArraySomeTypes, convert, applyFunction, 
     multiplicar, createMapFunction ,filterChain, sortImmutable, oddSort, oddTwoFigures,
-    getHistogram, getWarmHours, createUl, createClimateDataMatrix
+    getHistogram, getWarmHours, createUl, createClimateDataMatrix,
+    climateObject, ClimateObject
 };
 
 // Tipos de datos:
@@ -88,7 +89,18 @@ function createClimateDataMatrix(climateDataArray){
 const climateObject = {
     t: 20, 
     h: 50,
-    getTermicSensation() {
-       
+    getTemperatureFahrenheit() {
+       // Debe retornar la temperatura en la escala fahrenheit. 
     }
 }
+
+function ClimateObject(temperature, humidity){
+    // Crea la función constructora de objetos como el anterior. 
+}
+// Añade la función getTemperatureFahrenheit al prototype. 
+
+// Puedes probar a crear una clase con el mismo nombre en vez de función constructora
+// Debería pasar el test igualmente. 
+
+
+

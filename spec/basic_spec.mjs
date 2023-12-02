@@ -1,6 +1,8 @@
 import { createArraySomeTypes , convert, applyFunction, 
   multiplicar, createMapFunction, filterChain, sortImmutable, oddSort,
-  oddTwoFigures, getHistogram, getWarmHours, createClimateDataMatrix, createUl} from "../src/javascript_basico.js";
+  oddTwoFigures, getHistogram, getWarmHours, createClimateDataMatrix, createUl,
+  climateObject, ClimateObject
+} from "../src/javascript_basico.js";
 
 
 describe('Javascript Básico', function() {
@@ -141,7 +143,6 @@ describe('Javascript Básico', function() {
         expect(Array.isArray(result)).toBe(true);
         expect(result.every(r => Array.isArray(r))).toBe(true);
 
-    
         // Verificar que cada elemento en el array es un objeto con las propiedades correctas
           expect(result[1][10]).toEqual({ t: 20, h: 50 });
           expect(result[1][11]).toEqual({ t: 22, h: 48 });
@@ -155,6 +156,20 @@ describe('Javascript Básico', function() {
         const result = createUl(list);
         const expectedResult = "<ul><li>hola</li><li>mundo</li></ul>";
         expect(result).toEqual(expectedResult);
+      });
+
+      it('climateObject.getTemperatureFahrenheit() Debe retornar la temperatura correctamente', function () {
+        expect(climateObject.getTemperatureFahrenheit()).toBe(68);
+      });
+
+      it('ClimateObject.getTemperatureFahrenheit() Debe retornar la temperatura correctamente', function () {
+        let climateObjectTest = new ClimateObject(20,45);      
+        expect(climateObjectTest.getTemperatureFahrenheit()).toBe(68);
+        expect(climateObjectTest.hasOwnProperty('getTemperatureFahrenheit')).toBe(false);
+        expect(climateObjectTest).toEqual(jasmine.objectContaining({
+          t: jasmine.any(Number),
+          h: jasmine.any(Number)
+        }));
       });
 
     });
