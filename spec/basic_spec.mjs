@@ -1,7 +1,9 @@
-import { createArraySomeTypes , convert, applyFunction, 
+import { createArraySomeTypes , convert, getPrimes, min, applyFunction, 
   multiplicar, createMapFunction, filterChain, sortImmutable, oddSort,
   oddTwoFigures, getHistogram, getWarmHours, createClimateDataMatrix, createUl,
-  climateObject, ClimateObject
+  climateObject, ClimateObject, sumSalaries, multiplyNumeric, ladder,
+  randomInteger, checkSpam, truncate, getMaxSubSum, filterInPlace, sortByAge,
+  sortBy, shuffle, uniq
 } from "../src/javascript_basico.js";
 
 
@@ -47,6 +49,20 @@ describe('Javascript Básico', function() {
         expect(convert({a:1,b:2},"object")).toEqual({a:1,b:2});
       });
     });
+
+    describe(' Estructuras de control y operadores', function() {
+      it('getPrimes retorna los números primos en el rango comprendido entre start y end', function() {
+        expect(getPrimes(2,10)).toEqual([2,3,5,7]);
+        expect(getPrimes(10,2)).toEqual([]);
+        expect(getPrimes(8,10)).toEqual([]);
+      });
+      it('min, retorna el mínimo de un Array', function() {
+        expect(min([2,3,4,10])).toBe(2);
+        expect(min([2,3,4,"0",10])).toBe(2);
+        expect(min([2,3,4,-11,10])).toBe(-11);
+      });
+    });
+
     describe('Funciones', function() {
       it('Debe retornar el resultado de aplicar una función pasada como callback al primer dato', function() {
         expect(applyFunction(1, (n) => n*2)).toBe(2);
@@ -97,6 +113,39 @@ describe('Javascript Básico', function() {
         expect(result).toEqual([23,51]);
         expect(numbers).toEqual([1, 2, 5, 4, 3, 22, "a", "23", "32", 23, 51, 5, 100, 101, "101"]);
       });
+
+      it('sortByAge debe retornar una copia ordenada por edad del array', function () {
+        const people = [{ name: "John", age: 25 },{ name: "Pete", age: 30 },{ name: "Mary", age: 28 }];
+        const sortedPeople = sortByAge(people)
+        expect(sortedPeople.map(p => p.age)).toEqual([25,28,30]);
+        expect(people.map(p => p.age)).toEqual([25,30,28]);
+        sortedPeople.forEach(user => {
+          expect(user).toEqual(jasmine.objectContaining({ name: jasmine.any(String), age: jasmine.any(Number) }));
+        });
+      });
+
+      it('sortBy debe retornar una copia ordenada por el atributo del array', function () {
+        const people = [{ name: "John", age: 25 },{ name: "Pete", age: 30 },{ name: "Mary", age: 28 }];
+        const sortedPeople = sortBy(people,'age')
+        expect(sortedPeople.map(p => p.age)).toEqual([25,28,30]);
+        expect(people.map(p => p.age)).toEqual([25,30,28]);
+        sortedPeople.forEach(user => {
+          expect(user).toEqual(jasmine.objectContaining({ name: jasmine.any(String), age: jasmine.any(Number) }));
+        });
+        const sortedByName = sortBy(people,'name')
+        expect(sortedByName.map(p => p.name)).toEqual(["John","Mary","Pete"]);
+        expect(people.map(p => p.age)).toEqual([25,30,28]);
+        sortedByName.forEach(user => {
+          expect(user).toEqual(jasmine.objectContaining({ name: jasmine.any(String), age: jasmine.any(Number) }));
+        });
+        const sortedByNonKey = sortBy(people,'foo')
+        expect(sortedByNonKey.map(p => p.name)).toEqual(["John","Pete","Mary"]);
+        expect(people != sortedByNonKey).toEqual(true);
+        sortedByNonKey.forEach(user => {
+          expect(user).toEqual(jasmine.objectContaining({ name: jasmine.any(String), age: jasmine.any(Number) }));
+        });
+      });
+
       it('getHistogram Debe retornar un array de 100 elementos con la frecuencia de los números', function () {
         const numbers = [1, 2, 5, 4, 3, 5, 5, 1, 0, 98, 98];
         const result = getHistogram(numbers);
@@ -158,6 +207,25 @@ describe('Javascript Básico', function() {
         expect(result).toEqual(expectedResult);
       });
 
+      it('getMaxSubSum Debe retornar el array de suma máxima', function () {
+        expect(getMaxSubSum([-1, 2, 3, -9])).toEqual([2, 3]);
+        expect(getMaxSubSum([2, -1, 2, 3, -9])).toEqual([2, -1, 2, 3]);
+        expect(getMaxSubSum([-1, 2, 3, -9, 11])).toEqual([11]);
+        expect(getMaxSubSum([1, 2, 3])).toEqual([1, 2, 3]);
+        expect(getMaxSubSum([-1, -2, -3])).toEqual([]);
+      });
+
+      it('filterInPlace Debe retornar el array mutado y mutar el original', function () {
+        let original = [1,2,3,4,5,6,7,8,9,10];
+        const filterCallback = e => e % 2 === 0;
+        let result = filterInPlace(original,filterCallback);
+        console.log(result, original);
+        expect(result).toEqual([2,4,6,8,10]);
+        expect(result).toEqual(original);
+        expect(result).toBe(original);
+
+      });
+
       it('climateObject.getTemperatureFahrenheit() Debe retornar la temperatura correctamente', function () {
         expect(climateObject.getTemperatureFahrenheit()).toBe(68);
       });
@@ -170,6 +238,96 @@ describe('Javascript Básico', function() {
           t: jasmine.any(Number),
           h: jasmine.any(Number)
         }));
+      });
+
+      it('sumSalaries Debe retornar la suma de los salarios', function () {
+        expect(sumSalaries({
+          Juan: 100,
+          Ana: 160,
+          Pedro: 130
+          })).toBe(390);
+          expect(sumSalaries({})).toBe(0);
+      });
+
+      it('multiplyNumeric Debe retornar los atributos numéricos multiplicados por n', function () {
+        const originalObject = {
+          Juan: 100,
+          Ana: 160,
+          Pedro: 130,
+          dates: ["01/02/2023", "02/02/2023"],
+          };
+        const expectedMultipliedObject = {
+          Juan: 200,
+          Ana: 320,
+          Pedro: 260,
+          dates: ["01/02/2023", "02/02/2023"],
+        }
+        const result = multiplyNumeric(originalObject,2);
+        expect(result).toEqual(expectedMultipliedObject);
+        result.dates[3] = "foo";
+        expect(originalObject.dates[3]).toBe(undefined);
+      });
+
+      it('ladder debe permitir llamadas encadenadas', function () {
+          expect(ladder.down().up().down().up().up().getStep()).toBe(1);
+      });
+    });
+
+    describe('Misc', function() {
+      it('randomInteger debe obtener un número entero aleatorio entre min y max con la misma probabilidad', function () {
+        const generatedNumbers = Array(1000).fill(0).map(()=> randomInteger(1,10));
+        expect(generatedNumbers.every(n=> n > 0 && n <=10 )).toBe(true);
+        // Puede que este test falle por la probabilidad.
+        expect(generatedNumbers.filter(n=> n === 1).length > 70).toBe(true);
+        expect(generatedNumbers.filter(n=> n === 10).length > 70).toBe(true);
+      });
+      it('checkSpam debe indicar si hay palabras de spam', function () {
+        const spamWords = ["viagra", "porn", "xxx", "criptocurrency"];
+        expect(checkSpam("Buy Viagra!",spamWords)).toBe(true);
+        expect(checkSpam("Porn Free",spamWords)).toBe(true);
+        expect(checkSpam("XXXXX",spamWords)).toBe(true);
+        expect(checkSpam("Buy Criptocurrency!",spamWords)).toBe(true);
+        expect(checkSpam("Hello World",spamWords)).toBe(false);
+      });
+      it('truncate debe truncar y añadir ...', function () {
+        expect(truncate("Hello World",100)).toBe("Hello World");
+        expect(truncate("Hello World",2)).toBe("He...");
+        expect(truncate("Hello World",4)).toBe("Hell...");
+      });
+      it('camelize debe transformar en camelCase', function () {
+        expect(camelize("background-color")).toBe("backgroundColor");
+        expect(truncate("list-style-image",)).toBe("listStyleImage");
+        expect(truncate("-webkit-transition")).toBe("WebkitTransition");
+      });
+      it('shuffle debe ordenar de forma aleatoria con la misma distribución', function () {
+        const array = [1,2,3];
+        const shuffled = shuffle(array);
+        expect(shuffled.length).toBe(3);
+        expect(shuffled instanceof Array).toBe(true);
+        expect(shuffled === array).toBe(false);
+        let count = {
+          '123': 0,
+          '132': 0,
+          '213': 0,
+          '231': 0,
+          '321': 0,
+          '312': 0
+        };
+        for (let i = 0; i < 1000000; i++) {
+          let shuffled = shuffle(array);
+          count[shuffled.join('')]++;
+        }
+        let counts = Object.values(count);
+        //console.log(counts);
+        // Puede fallar con muy poca probabilidad. 
+        expect(counts.every(c => c > 160000 && c < 170000)).toBe(true);
+      });
+      it('uniq debe retornar un array sin repetidos', function () {
+        const array = [1,2,3,3,4,5,6,5];
+        const uniques = uniq(array);
+        expect(uniques).toEqual([1,2,3,4,5,6]);
+        expect(array).toEqual([1,2,3,3,4,5,6,5]);
+
       });
 
     });

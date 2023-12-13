@@ -1,7 +1,9 @@
-export {createArraySomeTypes, convert, applyFunction, 
+export {createArraySomeTypes, convert, getPrimes, min, applyFunction, 
     multiplicar, createMapFunction ,filterChain, sortImmutable, oddSort, oddTwoFigures,
     getHistogram, getWarmHours, createUl, createClimateDataMatrix,
-    climateObject, ClimateObject
+    climateObject, ClimateObject, sumSalaries, multiplyNumeric, ladder,
+    randomInteger, checkSpam, truncate, getMaxSubSum, camelize, filterInPlace,
+    sortByAge, sortBy, shuffle, uniq
 };
 
 // Tipos de datos:
@@ -19,6 +21,21 @@ function convert(data, type){
     // En caso de ser imposible de convertir, no dará error, retornará null.
     // Observa los tests i quieres más pistas de cómo se debe comportar esta función.
 }
+
+// Estructuras de control y operadores
+
+function getPrimes(start,end){
+ // Se denomina primo a un número entero mayor que 1 que no puede dividirse sin obtener un residuo por ningún número, excepto 1 y el propio número.
+ // En términos simples, un número primo (n > 1) es aquel que no tiene divisores exactos aparte de 1 y n.
+ // Como ejemplo, el número 5 es primo, ya que no es divisible exactamente por 2, 3 y 4.
+ // Proporciona un código que retorne los números primos en el rango comprendido entre start y end.
+}
+
+function min(array){
+    // Debe retornar el número mínimo de un array
+    // Debe descartar los valores no numéricos. 
+}
+
 
 // Funciones
 
@@ -58,6 +75,18 @@ function  oddSort(array) {
 function oddTwoFigures(array) {
    // Debe retornar sólo los números impares de dos cifras
   }
+
+function sortByAge(array){
+    // Esta función recibe un array de objetos como { name: "John", age: 25 }
+    // Debe retornar una copia del array ordenada por la edad.
+}  
+
+function sortBy(array, attribute){
+    // Esta función recibe un array de objetos como { name: "John", age: 25 }
+    // Además, recibe el nombre del atributo con el que ordenar
+    // Debe retornar una copia del array ordenada por el atributo seleccionado
+    // Si el atributo no existe, retornará una copia del array sin ordenar
+}
   
 function getHistogram(array){
     // Debe retornar un array de 100 elementos con la frecuencia de los números
@@ -68,6 +97,27 @@ function createUl(array){
     // Esta función acepta un array de textos y retorna una lista <ul> en HTML 
     // El resultado será una string con el código HTML, no un Element
     // Pista: Puedes usar .map() y .join()
+}
+
+function getMaxSubSum(array){
+    // retorna el subarray de elementos contiguos que tiene la suma máxima
+    // Si cualquier suma es negativa retorna un array vacío
+    /*
+        getMaxSubSum([-1, 2, 3, -9])          // [2, 3]
+        getMaxSubSum([2, -1, 2, 3, -9])       // [2, -1, 2, 3]
+        getMaxSubSum([-1, 2, 3, -9, 11])       // [11]
+        getMaxSubSum([-2, -1, 1, 2])         // [1, 2]
+        getMaxSubSum([100, -9, 2, -3, 5])    // [100]
+        getMaxSubSum([1, 2, 3])               //  [1, 2, 3]
+        getMaxSubSum([-1, -2, -3])              // []
+    */
+   // inspirado en: https://es.javascript.info/task/maximal-subarray 
+}
+
+function filterInPlace(array, filterCallback){
+    // Retorna el array filtrado mutando el array original
+    // Debe modificar y retornar el array modificado
+    // No debe reasignar el array
 }
 
 function getWarmHours(climateData, tempThreshold){
@@ -103,4 +153,93 @@ function ClimateObject(temperature, humidity){
 // Debería pasar el test igualmente. 
 
 
+function sumSalaries(salaries){
+    /*
+    Disponemos de un objeto que guarda la información de los salarios de nuestro equipo:
+        let salarios = {
+        Juan: 100,
+        Ana: 160,
+        Pedro: 130
+        };
 
+    Escribe el código necesario para retornar la suma de todos los salarios.
+    Si el objeto de salarios está vacío, el resultado debe ser 0.
+    */
+}
+
+function multiplyNumeric(object,n){
+   /*
+   Crea una función que multiplique los atributos numéricos de un objeto por n
+   Debe dejar intactos el resto de atributos.
+   Debe retornar una copia del objeto original, no modificarlo
+   Pista: structuredClone
+   */
+}
+
+const ladder = {
+    step: 0,
+    up() {
+      this.step++;
+    },
+    down() {
+      this.step--;
+    },
+    getStep: function() { 
+      return this.step;
+    }
+    /*
+    Ahora, si necesitamos hacer varios llamados en secuencia podemos hacer algo como esto:
+        ladder.up();
+        ladder.up();
+        ladder.down();
+        ladder.getStep(); // 1
+        ladder.down();
+        ladder.getStep(); // 0
+    Modifica el código de “arriba” up, “abajo” down y obtener peldaño” getStep para hacer los llamados encadenables como esto:
+        
+        ladder.up().up().down().down().getStep(); 
+    */
+  };
+
+
+  /// Misc.
+
+function randomInteger(min,max){
+    /*
+    Debe retornar un número entero aleatorio entre min y max incluyendo ambos, min y max, como valores posibles.
+    Todo número del intervalo min..max debe aparecer con la misma probabilidad.
+    Si se hace mal, el número min y max puede tener la mitad de probabilidad de salir que el resto
+    */
+   //Ejercicio obtenido en este tutorial: https://es.javascript.info/task/random-int-min-max
+}
+
+
+function checkSpam(str, spamWords){
+    // Debe obtener true si str contiene alguna de las palabras de spamWords
+    // No debe tener en cuenta las mayúsculas y minúsculas
+}
+  
+function truncate(str, maxLength){
+    // Debe truncar str a la longiud máxima y añadir ... al final
+}  
+
+function camelize(str){
+    // Debe transformar una cadena de kebab-case a camelCase
+    // https://en.wikipedia.org/wiki/Letter_case#Kebab_case
+    /*
+    camelize("background-color") == 'backgroundColor';
+    camelize("list-style-image") == 'listStyleImage';
+    camelize("-webkit-transition") == 'WebkitTransition';
+    */
+}
+
+function shuffle(array){
+    // Debe retornar una copia del array ordenado aleatoriamente
+    // Todos los reordenamientos de elementos tienen que tener la misma probabilidad.
+    // Explicación: https://es.javascript.info/task/shuffle 
+}
+
+
+function uniq(array){
+    // Debe retornar un array sin elementos repetidos
+}
