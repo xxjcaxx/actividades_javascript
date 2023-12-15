@@ -20,7 +20,7 @@ Las funciones no suelen ser interdependientes. Se pueden hacer en distinto orden
 Los tests están organizados por temáticas según mi criterio. Podemos empezar con los básicos (no por ello más fáciles) que tratan el lenguaje, estructuras de datos y un poco de algoritmos. Más adelantes, recomiendo hacer los de promesas y el resto de temáticas.
 
 > [!NOTE]  
-> Hay muchas maneras de programar en Javascript, ya que es multiparadigma. En términos generales, estos ejercicios potencian la **Programación Funcional**. De hecho hay un grupo específico de ejercicios para ello. 
+> Hay muchas maneras de programar en Javascript, ya que es multiparadigma. En términos generales, estos ejercicios potencian la **Programación Funcional**. De hecho hay un grupo específico de ejercicios para ello. Además, está pensado para programación de frontend web, no para ser ejecutado en Nodejs.
 
 ## Ejecutar los tests
 
