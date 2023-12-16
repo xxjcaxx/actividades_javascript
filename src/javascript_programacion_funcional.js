@@ -1,6 +1,7 @@
 // Programación funcional
 export {student, arbitraryArgs, getMax, getDistance, shiftArray, allShiftsArray, allShiftsString,
-    allNames, removeEmpties, groupByWeeks, filterTeam, getPoints, applyPermutations
+    allNames, removeEmpties, groupByWeeks, filterTeam, getPoints, applyPermutations, Arithmetic,
+    compose, stringToArray, reverseArray, joinArrayToString, reverseString
 };
 
 // Funciones puras
@@ -195,5 +196,103 @@ const applyPermutations = (permutations) => (array) => {
 
     En el test de esta función puedes ver un ejemplo
     */
+}
+
+
+
+
+
+//// Encadenamiento de métodos o Method Chaining
+/*
+En realidad no es una técnica específica de la programación funcional, pero es interesante trabajarla
+Las funciones de los arrays .map() .filter()... retornan también un array, y eso permite encadenarlas
+Estas funciones están en el Prototype de estos objetos. 
+Se puede imitar el Method Chaining en nuestras clases.
+*/
+
+class Arithmetic {
+    constructor() {
+      this.value = 0;
+    }
+    sum(...args) {
+      this.value = args.reduce((sum, current) => sum + current, 0);
+    }
+    add(value) {
+      this.value = this.value + value;
+    }
+    subtraction(value) {
+      this.value = this.value - value;
+    }
+    average(...args) {
+      this.value = args.length? (this.sum(...args).value) / args.length: undefined;
+    }
+  }
+
+ // Esta clase se puede invocar así:
+ // let Arithmetic1 = new Arithmetic();
+ // Arithmetic1.sum(1,3,6)
+ // Arithmetic1.subtraction(3)
+ // Arithmetic1.add(4)
+ 
+ /*
+ Modifica las funciones para poder invocarlo así:
+ Arithmetic1.sum(1,3,6).subtraction(3).add(4)
+ */
+
+
+ //// NOTA: 
+ /*
+ El method Chaining es suficientemente bueno en muchos casos, 
+ pero tiene problemas respecto a la filosofia de la programación funcional:
+
+ Depende de Objetos, por lo que se aproxima más a la POO
+ Reorganizar el órden en el que se aplican las funciones es complicado.
+ No permite usar funciones externas a los objetos
+ Es difícil de encadenar si las funciones retornan otras cosas
+
+ Por algunas de estas razones, librerias como RxJS han decidido sustituir esto por la Composición
+*/
+
+
+
+
+//// Composición
+
+// Javascript no tiene de momento una función nativa de composición, pero es una técnica tan
+// utilizada que se suele usar librerias como Lodash para aplicarla.
+// No obstante, podemos hacer una función simple "compose" que la implementa:
+
+const compose = (...fns) => x => fns.reduceRight((v, f) => f(v), x);
+
+// Si prefieres el otro órden, el del patrón Pipe:
+
+const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
+
+// Se recomienda analizar este breve código, porque es muy interesante. 
+
+
+// A continuación hay una serie de ejercicios que se deben completar en orden:
+
+
+const stringToArray = (string)=> {
+    /* Debe retornar un array a partir de un string
+    Puedes quitar las {} si la función flecha no las necesita
+    */
+   
+}
+
+const reverseArray = (array) => {
+    /* Debe retornar una copia del array invertido */
+   
+}
+
+const joinArrayToString = (array) => {
+    /* Debe retornar un string resultado de concatenar los elementos de un array */
+   
+}
+
+const reverseString = (string) => {
+   /* Debe aplicar composición con las funciones anteriores para obtener la inversa de una string */
+   
 }
 

@@ -1,7 +1,8 @@
 import {
     student, arbitraryArgs, getMax, getDistance,
     shiftArray, allShiftsArray, allShiftsString, allNames, removeEmpties,
-    groupByWeeks, filterTeam, getPoints, applyPermutations
+    groupByWeeks, filterTeam, getPoints, applyPermutations, Arithmetic,
+    compose, stringToArray, reverseArray, joinArrayToString, reverseString
 } from "../src/javascript_programacion_funcional.js"
 
 // Función auxiliar para descargar datos de localhost
@@ -258,6 +259,51 @@ describe('Programación Funcional', function () {
         });
  
     });
+
+
+    describe('Method Chaining', function () {
+        it('Arithmetic debe permitir encadenar sus métodos', function () {
+            const Arithmetic1= new Arithmetic();
+            const result = Arithmetic1
+              .sum(1, 3, 6)   // => { value: 10 } 
+              .subtraction(3)   // => { value: 7 }
+              .add(4)        // => { value: 11 }
+              .value;         // => 11 
+            
+              expect(result).toBe(11);
+        });
+ 
+    });
+
+
+    describe('Composición', function () {
+        it('stringToArray debe retornar un array desde un string', function () {
+            const string = "abcde"; 
+            const array = stringToArray(string);
+            expect(array).toBeInstanceOf(Array);
+            expect(array).toEqual(["a","b","c","d","e"]);
+        });
+        it('reverseArray debe retornar un array invertido', function () { 
+            const array = [1,2,3,4];
+            const inverted = reverseArray(array);
+            expect(inverted).toBeInstanceOf(Array);
+            expect(inverted).toEqual([4,3,2,1]);
+            expect(array).toEqual([1,2,3,4]);
+        });
+        it('joinArrayToString debe retornar un string de un array', function () { 
+            const array = [1,2,3,4,"a"];
+            const string = joinArrayToString(array);
+            expect(string).toBe("1234a");
+            expect(array).toEqual([1,2,3,4,"a"]);
+        });
+        it('reverseString debe retornar una string invertida usando composición ', function () { 
+            const string = "abcde"; 
+            const reversed = reverseString(string);
+            expect(reversed).toBe("edcba");
+        });
+ 
+    });
+
 
 });
 
