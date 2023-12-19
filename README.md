@@ -15,7 +15,7 @@ Cada función tiene un test (it()) asociado. No es necesario acabar todas las fu
 
 Algunos enunciados se complementan con la lectura del test. Si no entiendes qué se pide, puedes ir al test en la carpeta spec. Estará en un archivo con un nombre similar al de las funciones. Leer los test te ayudará a entender mejor el enunciado y a plantear nuevos tests a esas o otras funciones.
 
-Las funciones no suelen ser interdependientes. Se pueden hacer en distinto orden y probar por separado. Tampoco hay una progresión clara en dificultad. Lo difícil que sea un ejercicio es algo subjetivo. Es cierto que en el orden actual de las funciones, suelen ser más complicadas las del final. Además, suele ser de ejercicios muy atómicos y teóricos a otros más complejos y cercanos a la realidad.
+Las funciones no suelen ser interdependientes (a menos que lo indique). Se pueden hacer en distinto orden y probar por separado. Tampoco hay una progresión clara en dificultad. Lo difícil que sea un ejercicio es algo subjetivo. Es cierto que en el orden actual de las funciones, suelen ser más complicadas las del final. Además, suele ser de ejercicios muy atómicos y teóricos a otros más complejos y cercanos a la realidad.
 
 Los tests están organizados por temáticas según mi criterio. Podemos empezar con los básicos (no por ello más fáciles) que tratan el lenguaje, estructuras de datos y un poco de algoritmos. Más adelantes, recomiendo hacer los de promesas y el resto de temáticas.
 
@@ -36,4 +36,10 @@ Comando para ejecutar los tests de los ejercicios básicos:
 
 Comando para ejecutar los test de promesas: 
 > npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-promise.json
+
+Comando para ejecutar los tests de comunicación con el servidor:
+> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-http.json
+
+Comando para ejecutar los tests de programación funcional:
+> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-functional-programing.json
 

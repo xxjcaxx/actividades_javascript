@@ -1,4 +1,6 @@
-import { delayedFunction, delayPromiseFunction, promisify, rejectify, headsOrTailsPromise } from "../src/promesas.js";
+import { delayedFunction, delayPromiseFunction, promisify, rejectify, headsOrTailsPromise,
+  fakeNetwork, getMultipleData, getMultipleDataPromises, getMultipleDataSequential
+} from "../src/promesas.js";
 
 describe('Promesas', function () {
   describe('Callbacks', function () {
@@ -46,7 +48,7 @@ describe('Promesas', function () {
 
     it('headsOrTailsPromise debe retornar la promesa de lanzar una moneda', function () {
       let promise = headsOrTailsPromise(callback, errorSpy);
-      expect(promise instanceof Promise).toBe(true);
+      expect(promise).toBeInstanceOf(Promise)
       promise.then((message) => {
         expect(callback).toHaveBeenCalled();
         expect(message).toBe("Head");
@@ -56,5 +58,50 @@ describe('Promesas', function () {
           expect(message).toBe("Tail");
         })
     });
+  });
+  describe('Simular la red', function () {
+    it('fakeNetwork debe retornar de simular una conexión a la red', async function () {
+      let promise = fakeNetwork('http://...');
+      expect(promise).toBeInstanceOf(Promise)
+      try{
+        let message = await promise;
+        expect(message).toBe("http://...");
+      } catch (error){
+        expect(error).toBe("http://...");
+      }
+     
+    });
+
+    it('getMultipleData debe retornar la promesa de un array de resultados', async function () {
+      let promise = getMultipleData(['1','2','3','4','5']);
+      expect(promise).toBeInstanceOf(Promise)
+      let message = await promise
+        expect(message.length).toBe(5);
+        expect(['1',null]).toContain(message[0]);
+        expect(['2',null]).toContain(message[1]);
+    });
+
+    it('getMultipleDataPromises debe retornar un array de promesas de resultados', async function () {
+      let promiseArray = getMultipleDataPromises(['1','2','3','4','5']);
+      expect(promiseArray).toBeInstanceOf(Array);
+      expect(promiseArray.every(p => p instanceof Promise)).toBe(true);
+      let message = await Promise.all(promiseArray)
+      expect(message.length).toBe(5);
+      expect(['1',null]).toContain(message[0]);
+      expect(['2',null]).toContain(message[1]);
+    });
+
+    it('getMultipleDataSequential debe retornar la promesa de ejecutar el callback', async function () {
+      let arrayAux = [];
+      window.addArray = function addArray(n){arrayAux.push(n)}
+      let callback = spyOn(window,'addArray').and.callThrough();
+      let promise = getMultipleDataSequential(['1','2','3','4','5','6'],addArray);
+      expect(promise).toBeInstanceOf(Promise);
+      await promise;
+      // Se ha llamado al callback
+      expect(callback).toHaveBeenCalled();
+      expect(arrayAux).toEqual(['1','2','3','4','5','6']);
+    });
+
   });
 });
