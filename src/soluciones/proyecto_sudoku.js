@@ -31,14 +31,13 @@ Sudoku de ejemplo:
 
 
 /*
-Empezamos con la validación del formulario. Ya sabemos que no se debe repetir un número
-en filas, columnas o cuadrados. Entendemos cada fila, columna o cuadrado como un grupo de 9 números.
-
 Un grupo es un array de 9 números
 Para ser válido debe tener los 9 números diferentes i que no sea ninguno un 0
 Esta función retornará true o false en función de si és un grupo válido
 */
-const validateGroup = (grupo) =>  "TO DO";
+const validateGroup = (grupo) =>  { let setGrup = new Set(grupo);
+setGrup.delete(0);
+return setGrup.size === 9 && grupo.length === 9;}
 
 
 /*
@@ -49,7 +48,7 @@ Utiliza la función anterior para validar.
 
 En el sudoku de ejemplo, el resultado será [true,true,true,true,true,true,false,true,false]
 */
-const validateGroups = (grupos) => "TO DO";
+const validateGroups = (grupos) => grupos.map(validateGroup);
 
 /*
 Validar filas es muy fácil usando la función anterior. Pero validar columnas o cuadrados
@@ -58,13 +57,20 @@ La estrategia es convertir las columnas en filas transportando la matriz (rotán
 Las columnas convertidas en filas se puede probar con la función anterior. 
 La siguiente función transporta un sudoku y retorna una copia en la que las columnas son filas
 */
-const transpose = (sudoku) => "TO DO";
+const transpose = (sudoku) => sudoku[0].map((col, i) => sudoku.map((fila) => fila[i]));
 
 /*
 Para validar los cuadrados de 9 números también vamos a transformarlos en filas
 El orden es de izquierda a derecha y de arriba a abajo
 */
-const quadsToRows = (sudoku) =>  "TO DO";
+function extractSubMatrix(matrix, pos, size) {
+    return matrix
+      .filter((fila, i) => i >= pos.y && i < pos.y + size)
+      .map((fila) => fila.slice(pos.x, pos.x + size));
+  }
+
+const quadsToRows = (sudoku) =>  [0,3,6].map(y => [0,3,6].map(x => extractSubMatrix(sudoku,{x,y},3).flat())).flat();
+
 
 /*
 Ahora queda la función que valida todo el sudoku. 
@@ -77,7 +83,9 @@ En el ejemplo, el resultado sería:
     quads: [true,true,true,true,true,true,true,false,false]
 }
 */
-const validateSudoku = (sudoku) => "TO DO";
+const validateSudoku = (sudoku) => ({rows: validateGroups(sudoku),
+                                    cols: validateGroups(transpose(sudoku)),
+                                    quads: validateGroups(quadsToRows(sudoku))});
 
 /*
 Puede que el resultado de la función anterior sea útil por sí mismo, 
@@ -98,7 +106,10 @@ const expectedValidation = [
                 [true,true,true,    false,false,false, false,false,false],
                 [false,false,false, false,false,false, false,false,false]];
 */
-const generateValidationMatrix = (validation) => "TO DO";
+const generateValidationMatrix = (validation) => validation.rows.map((r,y) => 
+    validation.cols.map((c,x) =>{ //console.log(Math.floor(y/3)*3+Math.floor(x/3));
+     return r && c && validation.quads[Math.floor(y/3)*3+Math.floor(x/3)]})
+     );                                    
 
 
 /*
@@ -106,7 +117,11 @@ Cada vez que el usuario modifica el sudoku, debe indicar la posición y el nuevo
 La siguiente función recogerá esto y retornará 
 una copia del sudoku pasado por parámetros con en número cambiado
 */
-const changeNumber = (sudoku) => (row,col) => (number) => "TO DO";
+const changeNumber = (sudoku) => (row,col) => (number) => {
+    let sudokuCopy = structuredClone(sudoku);
+    sudokuCopy[row][col] = number;
+    return sudokuCopy;
+};
 
 
 
@@ -125,7 +140,16 @@ En el ejemplo anterior, el resultado podría ser:
 <td data-row="0" data-col="2" class="static ok">5</td>
      ....
 */
-const renderSudoku = (sudoku) => "TO DO";
+const renderSudoku = (sudoku) => {
+    const table = document.createElement('table');
+    const validations = validateSudoku(sudoku);
+    const validationMatrix = generateValidationMatrix(validations)
+    table.innerHTML = sudoku.map((fila,y) => `<tr>${fila.map((col,x) => 
+        `<td data-row="${y}" data-col="${x}"
+        class="${col === 0 ? 'input' : 'static'} ${validationMatrix[y][x] ? 'ok':  'wrong'}"
+        >${col}</td>`).join('')}</tr>`).join('');
+    return table;
+}
 
 
 /*
@@ -135,7 +159,10 @@ añade, retornando finalmente el elemento con el listener
 Ejemplo:
 addEventListenerToElement("click")(listenerFunction)(divSudoku)
 */
-const addEventListenerToElement = (event) => (listener) => (element) =>  "TO DO";
+const addEventListenerToElement = (event) => (listener) => (element) =>  {
+    element.addEventListener(event,listener);
+    return element;
+}
 
 /*
 Vamos a implementar un componente. 
@@ -153,7 +180,23 @@ Recibe en forma de array las coordenadas del número que va a sustituir.
 Los botones, al hacer click, emitirán un evento personalizado con el valor del click
 El evento se llamará "teclado" y tendrá como detail {key: 2, coordinates: [2,3]}, por ejemplo.
 */
-const generateKeyboard = ([col,row]) => "TO DO";
+const generateKeyboard = ([col,row]) => {
+    //console.log(row,col);
+    let keyboard = document.createElement('div');
+     keyboard.append(...[1,2,3,4,5,6,7,8,9,0].map(n => {
+        let tecla = document.createElement('button');
+        tecla.innerHTML = n;
+        tecla.addEventListener('click',(event)=>{
+            event.stopPropagation();
+            keyboard.dispatchEvent(new CustomEvent('teclado',{detail: {key: n, coordinates: [col,row]}, bubbles: true, cancelable: true}));
+            
+        });
+        return tecla;
+     }));
+     keyboard.classList.add("teclado");
+
+     return keyboard;
+}
 
 
 /*
@@ -162,7 +205,10 @@ Este evento detectará las coordenadas del click por el data-row y data-col del 
 Usará esas coordenadas para invocar la función anterior y generar un teclado.
 Este teclado lo añadirá con append al td donde se ha hecho click. 
 */
-const listenerInputClick = (event) => "TO DO";
+const listenerInputClick = (event) => { 
+   // console.log(event.target.dataset);
+    event.target.append(generateKeyboard([event.target.dataset.row, event.target.dataset.col]));
+}
 
 /*
 Cuando el usuario hace click en cualquier número del teclado generado, este habrá emitido un evento
@@ -175,7 +221,12 @@ Usará la función changeNumber para modificar el número y volverá a renderiza
 */
 
 const listenTeclado = (sudoku, container) => {
-    return  (event) => "TO DO";
+    return  (event) => {
+        //console.log(event.detail);
+        let { key, coordinates: [row, col] } = event.detail;
+        sudoku = changeNumber(sudoku)(row, col)(key);
+        appendSudoku(sudoku, container);
+    }
 }
 
 /*
@@ -188,4 +239,12 @@ Después:
 - Añadirá con append el div del sudoku al container
 */
 
-const appendSudoku = (sudoku, container) => "TO DO";
+const appendSudoku = (sudoku, container) => {
+    container.innerHTML = '';
+    compose(
+        s => container.append(s),
+        addEventListenerToElement('teclado')(listenTeclado(sudoku, container)),
+        addEventListenerToElement('click')(listenerInputClick),
+        renderSudoku
+    )(sudoku);
+}
