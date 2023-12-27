@@ -1,4 +1,4 @@
-export {makeIterable, range, arrayLike, salarios};
+export {makeIterable, range, arrayLike, salarios, makeRecordSet};
 
 function makeIterable(...items){
    /*
@@ -25,5 +25,7 @@ let salarios = {
     Pedro: 130
     // Transforma este objeto en un iterable, de manera que cada iteración devuelva:
     // {Juan: 100}, {Ana: 160}...
-    };
+  };
+
+
 

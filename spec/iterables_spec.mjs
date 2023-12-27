@@ -1,4 +1,4 @@
-import { makeIterable, range, arrayLike, salarios } from "../src/iterables.js";
+import { makeIterable, range, arrayLike, salarios, makeRecordSet } from "../src/iterables.js";
 
 describe('Iterables', function() {
     describe('Crear Iterables', function() {
@@ -42,4 +42,5 @@ describe('Iterables', function() {
         expect(salarios).not.toBeInstanceOf(Map);
       });
     });
+   
    });

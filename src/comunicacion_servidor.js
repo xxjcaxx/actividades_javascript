@@ -1,4 +1,4 @@
-export {getData, getDataCache}
+export {getData, getDataCache, getImg, sendForm, sendFormJSON, generateURL}
 
 async function getData(url){
     /*
@@ -19,3 +19,38 @@ function getDataCache(url){
     */
 }
 
+
+async function getImg(url){
+    /*
+    Esta función acepta una URL de una imagen y retorna la URL a un blob de la misma. 
+    Puede ser útil para pedir imágenes que están protegidas con una ApiKey o AccessToken...
+    */
+}
+
+async function sendForm(form,url){
+    /*
+    Esta función acepta un formulario del DOM y envia los datos por POST
+    Retorna la respuesta del servidor en formato texto.
+    Internamente debe usar FormData y fetch. 
+    */
+}
+
+async function sendFormJSON(form,url){
+    /*
+    Esta función acepta un formulario del DOM y envía por POST los datos en formato JSON
+    Retorna la respuesta del servidor en formato JSON. Se supone que responde lo mismo que le enviamos
+    Internamente usará FormData y fetch
+    Cuando enviamos un JSON hay que especificar en los headers "Content-type": "application/json; charset=UTF-8"
+    */
+}
+
+function generateURL(url,searchParams){
+    /*
+    Esta función recibe una url base y un array de parámetros de búsqueda
+    Este array tiene un formato como [["country", "Spain"],["province", "València"]]
+    Debes construir una URL segura con el típico formato de GET:
+    'api/country=Spain&province=Val%C3%A8ncia'
+    Ten en cuenta que los espacios o & son caracteres especiales y no valen para las URL
+    Pista: Te irá mejor si usas URLSearchParams
+    */
+}
