@@ -1,4 +1,4 @@
-export { fenToBoard, boardToLetters, boardToString, boardToFen, Chess }
+export { fenToBoard, boardToLetters, boardToString, boardToFen, Chess, boardToAlphaZero }
 
 /*
 Esta colección de ejercicios están basados en la temática del ajedrez. 
@@ -70,6 +70,20 @@ function boardToString(board) {
 function boardToFen(board,turn,castling,passant,halfmoveClock,fullmodeNumber){
   /*
   Esta función recibe todos los datos necesarios para retornar una partida en formato FEN: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+  */
+}
+
+function boardToAlphaZero(board,turn){
+  /*
+  La IA Alphazero Chess es una red neuronal que ha sido entrenada jugando contra ella misma. 
+  Para ser entrenada, la partida se debe codificar en varias matrices de 8x8. Se trata de que esta función imite la primera parte de esa codificación:
+  Se necesitan 12 matrices para las fichas y 1 para el color.
+  Las matrices para las fichas se codifican en 0s y 1s, de manera que, si en una posición se encuentra una ficha de determinado color, esa posición tiene un 1.
+  El órden es el siguiente: [peones blancos, peones negros, caballos blancos, caballos negros, alfines blancos, 
+                            alfiles negros, torres blancas, torres negras, reinas blancas reinas negras, rey blanco, rey negro]
+  La última matriz se considera "binaria" porque es toda 1s si es el turno de las blancas y toda 0s si es el de las negras
+
+  Observa el ejemplo de los tests para entenderlo mejor
   */
 }
 
