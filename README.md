@@ -46,11 +46,15 @@ Comando para ejecutar los tests de comunicación con el servidor:
 Comando para ejecutar los tests de programación funcional:
 > npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-functional-programing.json
 
-Por último, se plantea un proyecto completo en el que, si se hacen todas las funciones, se puede crear una biblioteca que permite crear un Sudoku completo, jugable y que valida.
+Se plantea un proyecto completo en el que, si se hacen todas las funciones, se puede crear una biblioteca que permite crear un Sudoku completo, jugable y que valida.
 
 Los tests para el proyecto Sudoku:
 > npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-sudoku.json
 
 Si queremos probar que el sudoku funciona, hay una carpeta "web_sudoku" con un html y js que necesitan la biblioteca para funcionar y ser arrancados desde un servidor de pruebas como la extensión "Live Server" de VS Code.
+
+También se plantea un conjunto de funciones relacionadas con el ajedrez:
+> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-chess.json
+
 
 Si resulta muy difícil o los enunciados son confusos, en la carpeta "soluciones" se puede ver cómo he implementado yo el sudoku. 
