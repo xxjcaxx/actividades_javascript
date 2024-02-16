@@ -1,4 +1,4 @@
-export { fenToBoard, boardToLetters, boardToString }
+export { fenToBoard, boardToLetters, boardToString, boardToFen, Chess }
 
 /*
 Esta colección de ejercicios están basados en la temática del ajedrez. 
@@ -29,18 +29,6 @@ function fenToBoard(fen) {
          [ 4, 0, 3, 0, 4, 0, 5, 0],
         ]
   */
-  const letters = {
-    'q': -6, 'k': -5, 'r': -4, 'b': -3, 'n': -2, 'p': -1,
-    'P': 1, 'N': 2, 'B': 3, 'R': 4, 'K': 5, 'Q': 6, '1': [0], '2': [0, 0], 3: [0, 0, 0],
-    '4': [0, 0, 0, 0], '5': [0, 0, 0, 0, 0], '6': [0, 0, 0, 0, 0, 0], 7: [0, 0, 0, 0, 0, 0, 0], 8: [0, 0, 0, 0, 0, 0, 0, 0]
-  };
-
-  let rows = fen.split(' ')[0].split('/');
-  return rows.filter((_, i) => i < 8).map((row) => {
-    let items = row.split('');
-    return items.map(i => letters[i]).flat()
-  });
-
 }
 
 function boardToLetters(board) {
@@ -58,8 +46,7 @@ function boardToLetters(board) {
       ['R', '.', 'B', '.', 'R', '.', 'K', '.'],
     ];
   */
-  const letters = ['q', 'k', 'r', 'b', 'n', 'p', '.', 'P', 'N', 'B', 'R', 'K', 'Q'];
-  return board.map(r => r.map(c => letters[c + 6]))
+ 
 }
 
 function boardToString(board) {
@@ -78,12 +65,12 @@ function boardToString(board) {
   +------------------------+
    a  b  c  d  e  f  g  h
   */
+}
 
-  return `  +------------------------+
-${board.map((row, i) => `${8 - i} | ${row.join('  ')} |`).join('\n')}
-  +------------------------+
-    a  b  c  d  e  f  g  h`;
-
+function boardToFen(board,turn,castling,passant,halfmoveClock,fullmodeNumber){
+  /*
+  Esta función recibe todos los datos necesarios para retornar una partida en formato FEN: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
+  */
 }
 
 class Chess {
@@ -92,11 +79,11 @@ class Chess {
     Este constructor recibe un tablero que puede ser en formato FEN o 
     como una matriz de números o letras. 
     */
-   this.currentBoard = null; // Sustituir el null por el tablero representado con números
-   this.turn = null; // Sustituir el turn por el turno (si está en FEN se sabe, en matriz asumimos que son las blancas) 
+  this.currentBoard = null; // Sustituir el null por el tablero representado con números
+  this.turn = null; // Sustituir el null por el turno (si está en FEN se sabe, en matriz asumimos que son las blancas) 
   }
   move(){
-    /*
+       /*
     Esta función retorna un objeto con dos funciones, .uci(move) y .san(move)
     Cada una de ellas interpreta un movimiento en UCI o en SAN y modifica el currentBoard
     La manera de llamarlas puede ser:
@@ -105,14 +92,19 @@ class Chess {
     Además, guarda un histórico de movimientos. 
     */
   }
+  get toString(){
+    /*
+    Este getter retorna el tablero transformado a string
+    */
+  }
   get history(){
     /*
     Este getter retorna un array de tableros en notación FEN con el histórico de jugadas
     */
   }
-  get history_moves(){
+  get historyMoves(){
     /*
-    Este getter retorna un array de movimientos históricos en formato SAN
+    Este getter retorna un array de movimientos históricos en formato UCI
     */
   }
 }
