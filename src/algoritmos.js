@@ -197,8 +197,31 @@ const  MCIsFullExpandedNode = (node)=>{
    return node.expandableMoves.every(m=> m===0) && node.children.length > 0;
 }
 
-const MCGetUcb = (node) => {
-    
+const MCGetUcb = (node, parentNode, C) => {
+    /*
+    Upper Confidence Bound es la elegibilidad de un nodo respecto a los demás. 
+    Es importante elegir buenos nodos, es decir, que tengan un buen balance entre 
+    los éxitos finales y las veces que se ha visitado. Pero también es necesario
+    poder explorar nodos poco explorados por si se pierden oportunidades. 
+
+    Para calcular el UCB se usa esta fórmula expresada en LaTeX:
+    {\displaystyle {\frac {w_{i}}{n_{i}}}+c{\sqrt {\frac {\ln N_{i}}{n_{i}}}}}
+    Puedes copiar y pegar la expressión en un editor de LaTeX para verla mejor. 
+
+    De esta manera, primero se cuenta la ratio victorias/visitas y se suma a 
+    una operación que valora la ratio entre las visitas al padre y las visitas al nodo. 
+    Mediante esta fórmula, un nodo poco visitado irá ganando peso conforme no es visitado
+    C es un parámetro que suele ser raíz de 2, este valor se ha definido empíricamente. 
+    wi = las victorias del nodo
+    ni = las visitas del nodo
+    Ni = las visitas del nodo padre
+
+    A la hora de hacer la fórmula hay que evitar divisiones por 0 
+
+    Esta función recibe el nodo, el nodo padre y C y retorna el valor de UCB
+    */
+    let qValue = 1 - ((node.value / node.visits)+1) / 2
+    return qValue + C * Math.sqrt(Math.log(parentNode.visits)/ node.visits)
 }
 
 
