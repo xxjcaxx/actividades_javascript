@@ -58,10 +58,13 @@ describe('3 en raya', function() {
 
 describe('Montecarlo', function() {
   const game = {
+    actionSize: 9,
     getValidMoves: alg.TicTacToeGetValidMoves,
     getInitialState: alg.TicTacToeGetInitialState,
     getNextState: alg.TicTacToeGetNextState,
-    changePerspective: alg.TicTacToeChangePerspective
+    changePerspective: alg.TicTacToeChangePerspective,
+    getWinAndTerminated: alg.TicTacToeGetWinAndTerminated,
+    changePlayer: alg.TicTacToeChangePlayer
   }
   const exampleNode = {
     state: [[0,1,0],[0,-1,0],[0,0,0]],
@@ -69,25 +72,30 @@ describe('Montecarlo', function() {
     value: 0,
     visits: 0,
     expandableMoves: [1,0,1, 1,0,1, 1,1,1],
+    parent: null,
     children: []
   }
   const exampleExpandedNode = {
     state: [[-1,1,-1],[1,-1,1],[1,-1,0]],
     actionTaken: 1,
-    value: 0,
-    visits: 0,
+    value: 2,
+    visits: 5,
     expandableMoves: [0,0,0, 0,0,0, 0,0,0],
+    parent: null,
     children: [
       {
         state: [[1,-1,1],[-1,1,-1],[-1,1,-1]],
         actionTaken: 8,
-        value: 0,
-        visits: 0,
+        value: 1,
+        visits: 4,
         expandableMoves: [0,0,0, 0,0,0, 0,0,0],
+        parent: null,
         children: []
       }
     ]
-  }
+  };
+  exampleExpandedNode.children[0].parent = exampleExpandedNode;
+
     describe('Funciones auxiliares', function() {
       it('MCExpandNode Debe retornar el nodo expandido', function() {
         /*
@@ -134,6 +142,16 @@ describe('Montecarlo', function() {
       expect(alg.MCIsFullExpandedNode(exampleExpandedNode.children[0])).toBe(false);
       
     });
+
+    it('MCGetUcb Debe retornar el UCB', function() {
+      expect(alg.MCGetUcb(exampleExpandedNode.children[0],exampleExpandedNode,1.41)).toBeCloseTo(1.26, 1);
+    });
+
+    it('MTCSearch Debe retornar la mejor jugada', function() {
+
+      expect(alg.MCTSearch(game,exampleNode.state,100)).toBe(1)
+    });
+ 
  
   });
    

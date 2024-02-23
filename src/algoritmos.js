@@ -5,7 +5,8 @@ export {TicTacToeGetInitialState,
     TicTacToeGetWinAndTerminated,
     TicTacToeChangePlayer,
     TicTacToeChangePerspective,
-    MCExpandNode, MCIsFullExpandedNode
+    MCExpandNode, MCIsFullExpandedNode,
+    MCGetUcb, MCTSearch
 }
 
 /**
@@ -97,19 +98,22 @@ function TicTacToeChangePerspective(state){
 /* Bloque 2 El algoritmo Montecarlo Tree Search */
 
 /*
-https://en.wikipedia.org/wiki/Monte_Carlo_tree_search
+El 3 en raya tiene exactamente 303 situaciones distintas del tablero sin contar 
+las situaciones finales en las que gana alguien o hay tablas ni las
+rotaciones sobre una misma situación que son equivalentes. Si contamos todas
+las posibles situaciones son 19683, aunque dentro de esas combinaciones hay
+situaciones que nunca se alcanzarán, ya que una vez hay 3 en raya no se continúa
+jugando. Esto es una cantidad aceptable y por eso el 3 en raya se considera un juego "resuelto", 
+ya que un jugador perfecto siempre gana o empata.
+
+Pero para aprender algoritmos es ideal, ya que las reglas son simples.
+
 
 El algoritmo de Montecarlo se usa para implementar una cierta
 inteligencia en la búsqueda de la mejor decisión. Se suele usar en juegos 
 tipo el 3 en raya o incluso ajedrez para encontrar la jugada con más opciones de ganar
 
-El 3 en raya tiene exactamente 303 situaciones distintas del tablero sin contar 
-las situaciones finales en las que gana alguien o hay tablas ni las
-rotaciones sobre una misma situación que son equivalentes. Si contamos todas
-las posibles situaciones son 19683. Esto es una cantidad aceptable y por eso el 3 en raya
-se considera un juego "resuelto", ya que un jugador perfecto siempre gana o empata.
-
-Pero para aprender algoritmos es ideal, ya que las reglas son simples.
+https://en.wikipedia.org/wiki/Monte_Carlo_tree_search
 
 Vamos a implementar un algortimo de Montecarlo genérico que luego
 se podrá usar para implementar la IA del 3 en raya. 
@@ -126,7 +130,8 @@ con objetos literales. Por lo que vamos a usar un objeto con esta sintaxis recur
     actionTaken: number
     value: number, 
     visits: number,
-    expandableMoves: [] 
+    expandableMoves: [],
+    parent: Node
     children: [
         {value: number, visits: number, children:[...]},
         {value: number, visits: number, children:[...]}
@@ -143,10 +148,13 @@ Esto se hará cuando se quiera usar el algoritmo.
 */
 
 const game = {
+    actionSize: 9,
     getValidMoves: TicTacToeGetValidMoves,
     getInitialState: TicTacToeGetInitialState,
     getNextState: TicTacToeGetNextState,
-    changePerspective: TicTacToeChangePerspective
+    changePerspective: TicTacToeChangePerspective,
+    getWinAndTerminated: TicTacToeGetWinAndTerminated,
+    changePlayer: TicTacToeChangePlayer
 }
 
 const MCExpandNode = (game)=> (node)=> {
@@ -171,6 +179,7 @@ const MCExpandNode = (game)=> (node)=> {
         value: 0, 
         actionTaken: selectedMove,
         visits: 0, 
+        parent: node,
         children: []
     }
     // Anulamos ya ese movimiento como posible expansión
@@ -216,7 +225,7 @@ const MCGetUcb = (node, parentNode, C) => {
     ni = las visitas del nodo
     Ni = las visitas del nodo padre
 
-    A la hora de hacer la fórmula hay que evitar divisiones por 0 
+    A la hora de implementar la fórmula hay que evitar divisiones por 0 
 
     Esta función recibe el nodo, el nodo padre y C y retorna el valor de UCB
     */
@@ -245,15 +254,64 @@ function MCTSelectBestNode(game, root){
     
 }
 
+
+const MCSimulate = (game) => (node) => {
+    let {win, terminated} = game.getWinAndTerminated(node.state, node.actionTaken);
+    let value = -win;
+    if (terminated) { return value;}
+    let state_copy = structuredClone(node.state);
+    let player = 1
+    while(true){
+        let validMoves = game.getValidMoves(state_copy);
+        let action = validMoves[Math.floor(Math.random()*validMoves.length)];
+        let {win, terminated} = game.getWinAndTerminated(state_copy, action);
+        if(terminated){
+            if(player == -1){ win = -win}
+            return win;
+        }
+        player = -player;
+
+    }
+}
+
+const MCBackPropagate = (node,value) => {
+    node.value += value;
+    node.visits += 1;
+
+    value = -value;
+    if (node.parent){
+        MCBackPropagate(node.parent,value);
+    }
+
+}
+
+
 function MCTSearch(game, state, numSearches){
     let root = {
-        state: game.getInitialState(),
+        state: state,
         value: 0, 
         visits: 0, 
-        expandableMoves: [game.getValidMoves(game.getInitialState())],
+        expandableMoves: [game.getValidMoves(state)],
+        parent: null,
         children: []};
-    for (let search of numSearches){
-        let node = MCTSelectBestNode(root)
+    for (let search=0; search<numSearches; search++){
+        let node = MCTSelectBestNode(root);
+        let {win, terminated} = game.getWinAndTerminated(node.state, node.actionTaken);
+        let value = -win;
+
+        if (!terminated){
+            node = MCExpandNode(game)(node);
+            value = MCSimulate(game)(node);
+        }
+
+        MCBackPropagate(node,value);
     }
+
+    let actionVisits = Array(game.actionSize).fill(0);
+    for(child of root.children){
+        actionVisits[child.actionTaken] = child.visits
+    }
+    let visitsTotal = actionVisits.reduce((p,v)=> p+v);
+    return actionVisits.map( v=> v/visitsTotal);
 }
 
