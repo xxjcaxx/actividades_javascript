@@ -149,7 +149,7 @@ describe('Montecarlo', function() {
 
     it('MTCSearch Debe retornar la mejor jugada', function() {
 
-      expect(alg.MCTSearch(game,exampleNode.state,100)).toBe(1)
+      expect(alg.MCTSearch(game,exampleNode.state,100)).toBeInstanceOf(Array)
     });
  
  
@@ -157,4 +157,3 @@ describe('Montecarlo', function() {
    
    });
 
-   

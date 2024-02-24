@@ -55,6 +55,9 @@ function TicTacToeCheckWin(state,action){
     el jugador actual ha ganado.
     En el estado que se le pasa ya se ha realizado el action
     */
+    if(action == null){
+        return false;
+    }
     const winCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [6, 4, 2], [0, 3, 6], [1, 4, 7], [2, 5, 8]];
     let player = state[Math.floor(action/3)][action%3];
     let s = state.flat();
@@ -72,12 +75,12 @@ function TicTacToeGetWinAndTerminated(state,action){
      * ya no quedan jugadas válidas pero no ha ganado nadie.
      */
     if (TicTacToeCheckWin(state,action)){
-        return {win: true, terminated: true}
+        return {win: 1, terminated: true}
     }
     if (TicTacToeGetValidMoves(state).every(m => m==0)){
-        return {win: false, terminated: true}
+        return {win: 0, terminated: true}
     }
-    return {win: false, terminated: false}
+    return {win: 0, terminated: false}
 }
 
 function TicTacToeChangePlayer(player){
@@ -168,22 +171,28 @@ const MCExpandNode = (game)=> (node)=> {
     y la lista de movimientos válidos a partir de ahí, además de una lista vacía de nodos hijos. 
     El estado del nodo hijo será calculado como el estado del padre con el movimiento escogido al azar de
     entre los válidos. Además, el nodo hijo tendrá el estado con la perspectiva invertida, ya que cambia el jugador
-    Para simplificar, en esta función, vamos a mutar el node en vez de retornar una copia. 
+
     */
+    
     let possibleMoves = node.expandableMoves.reduce((eM,current,index)=>{ 
         if(current === 1) { eM.push(index)}
         return eM;
      },[]);
+     
     let selectedMove = possibleMoves[Math.floor(Math.random()*possibleMoves.length)];
+     // Anulamos ya ese movimiento como posible expansión
+    node.expandableMoves[selectedMove] = 0;
+    
     let children = {
         value: 0, 
         actionTaken: selectedMove,
         visits: 0, 
         parent: node,
+        expandableMoves: [...node.expandableMoves],
         children: []
     }
-    // Anulamos ya ese movimiento como posible expansión
-    node.expandableMoves[selectedMove] =0;
+   
+    //console.log(node.expandableMoves, possibleMoves, selectedMove, children);
     // Copiamos el estado anterior
     children.state = structuredClone(node.state);
     // Ponemos un 1 en el action porque siempre está desde la perspectiva del 1
@@ -194,6 +203,8 @@ const MCExpandNode = (game)=> (node)=> {
     children.expandableMoves = game.getValidMoves(children.state);
     // Añadimos el nodo hijo
     node.children.push(children)
+    //console.log("Expand",children);
+    return children;
 }
 
 
@@ -229,12 +240,14 @@ const MCGetUcb = (node, parentNode, C) => {
 
     Esta función recibe el nodo, el nodo padre y C y retorna el valor de UCB
     */
+   //console.log("UCB", node,parentNode,C);
     let qValue = 1 - ((node.value / node.visits)+1) / 2
+    //console.log(node.value, node.visits, qValue);
     return qValue + C * Math.sqrt(Math.log(parentNode.visits)/ node.visits)
 }
 
 
-function MCTSelectBestNode(game, root){
+const MCTSelectBestNode = (root) =>{
     /*
     Para seleccionar el mejor nodo, hay que elegir recursivamente
     el mejor de los hijos de un nodo. De esta manera, el mejor elige su mejor hijo
@@ -244,40 +257,55 @@ function MCTSelectBestNode(game, root){
     Esta función recibe un nodo que actúa como raíz y se llama a sí misma para obtener el mejor
     nodo hijo. 
     */
-   if (MCIsFullExpandedNode(game,root)){
-    return root;
-   }
-    let ucbList = root.children.map(MCGetUcb);
+   if (MCIsFullExpandedNode(root)){  // Si está expandido elige el mejor hijo
+    //console.log("Fully Expanded",root);
+    let ucbList = root.children.map(child => MCGetUcb(child,root,1.42));
     let bestUCB = Math.max(...ucbList);
     let bestChild = root.children[ucbList.findIndex(ucb => ucb === bestUCB)];
-    return MCTSelectBestNode[bestChild];
+   // console.log("Select",ucbList,bestUCB,bestChild.actionTaken, bestChild.visits, bestChild.value);
+    return MCTSelectBestNode(bestChild);
+    
+   } // Si no está expandido se retorna a sí mismo
+   return root;
     
 }
 
 
 const MCSimulate = (game) => (node) => {
+    
     let {win, terminated} = game.getWinAndTerminated(node.state, node.actionTaken);
     let value = -win;
     if (terminated) { return value;}
     let state_copy = structuredClone(node.state);
-    let player = 1
+    let player = 1;
     while(true){
+        
         let validMoves = game.getValidMoves(state_copy);
-        let action = validMoves[Math.floor(Math.random()*validMoves.length)];
+        let possibleMoves = validMoves.reduce((eM,current,index)=>{ 
+            if(current === 1) { eM.push(index)}
+            return eM;
+         },[]);
+         
+        //c/onsole.log("simulation1", state_copy, possibleMoves);
+        let action = possibleMoves[Math.floor(Math.random()*possibleMoves.length)];
+        state_copy = game.getNextState(state_copy,action,player);
         let {win, terminated} = game.getWinAndTerminated(state_copy, action);
         if(terminated){
             if(player == -1){ win = -win}
+           // console.log("simulate2", state_copy, win ); 
             return win;
         }
         player = -player;
-
+        //console.log("simulation2", state_copy, validMoves, action);
+        //return win
     }
 }
 
 const MCBackPropagate = (node,value) => {
+    
     node.value += value;
     node.visits += 1;
-
+    //console.log("Backpropagate", node, value ); 
     value = -value;
     if (node.parent){
         MCBackPropagate(node.parent,value);
@@ -289,29 +317,52 @@ const MCBackPropagate = (node,value) => {
 function MCTSearch(game, state, numSearches){
     let root = {
         state: state,
+        actionTaken: null,
         value: 0, 
         visits: 0, 
-        expandableMoves: [game.getValidMoves(state)],
+        expandableMoves: [...game.getValidMoves(state)],
         parent: null,
         children: []};
+
     for (let search=0; search<numSearches; search++){
+        // Selecciona de forma recursiva el mejor nodo:
         let node = MCTSelectBestNode(root);
+        // comprueba las ganancias del mejor nodo y si ha terminado
         let {win, terminated} = game.getWinAndTerminated(node.state, node.actionTaken);
+        // Pone el value a -win para el backpropagate
         let value = -win;
 
         if (!terminated){
             node = MCExpandNode(game)(node);
+            //console.log("No terminated", node);
             value = MCSimulate(game)(node);
         }
-
+        //console.debug(terminated,value);
         MCBackPropagate(node,value);
     }
 
+
     let actionVisits = Array(game.actionSize).fill(0);
-    for(child of root.children){
+    for(let child of root.children){
         actionVisits[child.actionTaken] = child.visits
     }
+    
     let visitsTotal = actionVisits.reduce((p,v)=> p+v);
+    console.log(root,actionVisits,visitsTotal);
+   
+    let rootNoParent = structuredClone(root);
+    removeAttribute(rootNoParent,'parent');
+    console.log(rootNoParent);
+
     return actionVisits.map( v=> v/visitsTotal);
 }
 
+
+function removeAttribute(object,attribute){
+    delete object[attribute];
+    for(let c of object.children){
+        removeAttribute(c,attribute)
+    }
+}
+
+//https://www.cs.us.es/~fsancho/Blog/posts/MCTS.md
