@@ -67,7 +67,7 @@ describe('Montecarlo', function() {
     changePlayer: alg.TicTacToeChangePlayer
   }
   const exampleNode = {
-    state: [[0,1,0],[0,-1,0],[0,0,0]],
+    state: [[0,-1,0],[0,1,0],[0,0,0]],
     actionTaken: 1,
     value: 0,
     visits: 0,
