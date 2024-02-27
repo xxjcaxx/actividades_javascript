@@ -6,7 +6,7 @@ export {TicTacToeGetInitialState,
     TicTacToeChangePlayer,
     TicTacToeChangePerspective,
     MCExpandNode, MCIsFullExpandedNode,
-    MCGetUcb, MCTSearch, MCStateToString
+    MCGetUcb, MCTSearch, MCStateToString, MCGetRandomMove
 }
 
 /**
@@ -23,23 +23,23 @@ function TicTacToeGetInitialState(){
     return [[0,0,0],[0,0,0],[0,0,0]]
 }
 
-function TicTacToeGetNextState(state,action,player){
+function TicTacToeGetNextState(state,move,player){
     /*
     Esta función recibe: 
     - Un estado en forma de matriz 3x3
     - Una acción que es un entero de 0 a 9, que indica a qué posición se moverá el player
     - Un player que es un número 1 o -1
     Debe retornar una copia del estado donde se ha puesto el player
-    en el lugar donde indica action
+    en el lugar donde indica move
      */
     let state_copy = structuredClone(state);
-    state_copy[Math.floor(action/3)][action%3] = player;
+    state_copy[Math.floor(move/3)][move%3] = player;
     return state_copy;
 }
 
 function TicTacToeGetValidMoves(state){
     /*
-    Esta función retorna un array con las "actions" o movimientos válidos
+    Esta función retorna un array con las "moves" o movimientos válidos
     Un movimiento válido es la posición donde el tablero tiene un 0
     El resultado es un array de 1s y 0s donde un 1 significa que el movimiento de esa
     posición del array es válido. 
@@ -49,23 +49,23 @@ function TicTacToeGetValidMoves(state){
     return state.flat().map(move => move === 0 ? 1 : 0)
 }
 
-function TicTacToeCheckWin(state,action){
+function TicTacToeCheckWin(state,move){
     /*
-    Esta función retorna true o false dependiendo si, con el action,
+    Esta función retorna true o false dependiendo si, con el move,
     el jugador actual ha ganado.
-    En el estado que se le pasa ya se ha realizado el action
+    En el estado que se le pasa ya se ha realizado el move
     */
-    if(action == null){
+    if(move == null){
         return false;
     }
     const winCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 4, 8], [6, 4, 2], [0, 3, 6], [1, 4, 7], [2, 5, 8]];
-    let player = state[Math.floor(action/3)][action%3];
+    let player = state[Math.floor(move/3)][move%3];
     let s = state.flat();
     return winCombos.some((combo) => [s[combo[0]], s[combo[1]], s[combo[2]]].every((v) => v === player))
    
 }
 
-function TicTacToeGetWinAndTerminated(state,action){
+function TicTacToeGetWinAndTerminated(state,move){
     /**
      * Esta función recibe un estado y la última acción realizada
      * Devuelve un objecto que tendrá esta estructura:
@@ -74,7 +74,7 @@ function TicTacToeGetWinAndTerminated(state,action){
      * Una partida acaba si alguien gana o en tablas, es decir, que 
      * ya no quedan jugadas válidas pero no ha ganado nadie.
      */
-    if (TicTacToeCheckWin(state,action)){
+    if (TicTacToeCheckWin(state,move)){
         return {win: 1, terminated: true}
     }
     if (TicTacToeGetValidMoves(state).every(m => m==0)){
@@ -130,11 +130,12 @@ para el algoritmo definitivo.
 con objetos literales. Por lo que vamos a usar un objeto con esta sintaxis recursiva:
 {
     state: GameState,
-    actionTaken: number
+    moveTaken: number
     value: number, 
     visits: number,
     expandableMoves: [],
     parent: Node
+    player: 1,
     children: [
         {value: number, visits: number, children:[...]},
         {value: number, visits: number, children:[...]}
@@ -143,37 +144,38 @@ con objetos literales. Por lo que vamos a usar un objeto con esta sintaxis recur
 
 Para hacerlo genérico, declararemos un objeto "game" que adaptará las funciones de un juego a este algoritmo:
 const game = {
-    getValidMoves: TicTacToeGetValidMoves,
-    getInitialState: TicTacToeGetInitialState,
-    
-}
-Esto se hará cuando se quiera usar el algoritmo.
-*/
-
-const MCStateToString = (state) => {
-    return `
-${state.map(row => row.map(col => col === 0 ? '_' : col === 1 ? 'O' : 'X').join(' ')).join('\n')}`; 
-}
-
-const MCGetRandomAction = (validMoves) => {
-   // let validMoves = game.getValidMoves(state);
-    let possibleMoves = validMoves.reduce((eM,current,index)=>{ 
-            if(current === 1) { eM.push(index)}
-            return eM;
-         },[]);
-    let action = possibleMoves[Math.floor(Math.random()*possibleMoves.length)];
-    return action;
-
-}
-
-const game = {
-    actionSize: 9,
+    moveSize: 9,
     getValidMoves: TicTacToeGetValidMoves,
     getInitialState: TicTacToeGetInitialState,
     getNextState: TicTacToeGetNextState,
     changePerspective: TicTacToeChangePerspective,
     getWinAndTerminated: TicTacToeGetWinAndTerminated,
     changePlayer: TicTacToeChangePlayer
+}
+
+Esto se hará cuando se quiera usar el algoritmo y está hecho en los tests
+*/
+
+const MCStateToString = (state) => {
+    /*
+    Esta función auxiliar retornará el estado del juego en formato string, de manera que se vea bien por consola, por ejemplo
+    */
+    return `
+${state.map(row => row.map(col => col === 0 ? '_' : col === 1 ? 'O' : 'X').join(' ')).join('\n')}`; 
+}
+
+const MCGetRandomMove = (validMoves) => {
+    /*
+    Esta función recibe un array de posibles movimientos, de manera que un 1 significa que ese movimiento es legal y un 0 que no
+    Retorna la posición de un movimiento aleatorio de los que son legales.
+    */
+    let possibleMoves = validMoves.reduce((eM,current,index)=>{ 
+            if(current === 1) { eM.push(index)}
+            return eM;
+         },[]);
+    let move = possibleMoves[Math.floor(Math.random()*possibleMoves.length)];
+    return move;
+
 }
 
 const MCExpandNode = (game)=> (node)=> {
@@ -184,18 +186,40 @@ const MCExpandNode = (game)=> (node)=> {
     Se debe seleccionar uno de ellos, crear un nodo hijo y añadirlo a la lista de children
     del nodo. 
     El nodo hijo recibirá el estado modificado por el movimiento, un valor y contador de visitas a 0
-    y la lista de movimientos válidos a partir de ahí, además de una lista vacía de nodos hijos. 
+    y la lista de movimientos válidos a partir de ahí, además de una lista vacía de nodos hijos y una referencia al nodo padre. 
     El estado del nodo hijo será calculado como el estado del padre con el movimiento escogido al azar de
-    entre los válidos. Además, el nodo hijo tendrá el estado con la perspectiva invertida, ya que cambia el jugador
+    entre los válidos.
+    Por ejemplo, con este nodo padre: 
+    {
+        "state": [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
+        "moveTaken": null,
+        "value": 0,
+        "visits": 0,
+        "expandableMoves": [1, 1, 1, 1, 1, 1, 1, 1, 1],
+        "player": -1,
+        "parent": null,
+        "children": []
+    }
 
+    Tendríamos un posible nodo hijo expandido como este:
+      {
+        "state": [[0, 0, 0], [0, 1, 0], [0, 0, 0]],
+        "moveTaken": 4,
+        "value": 0,
+        "visits": 0,
+        "expandableMoves": [1, 1, 1, 1, 0, 1, 1, 1, 1],
+        "player": 1,
+        "parent": <El nodo padre>
+        "children": []
+    }
     */
 
-    let selectedMove = MCGetRandomAction(node.expandableMoves); 
+    let selectedMove = MCGetRandomMove(node.expandableMoves); 
     node.expandableMoves[selectedMove] = 0;
     
     let children = {
         value: 0, 
-        actionTaken: selectedMove,
+        moveTaken: selectedMove,
         visits: 0, 
         parent: node,
         player: -node.player,
@@ -208,7 +232,7 @@ const MCExpandNode = (game)=> (node)=> {
   
     // Cambiamos de nuevo la perspectiva para que siempre sea la del 1
     //children.state = game.changePerspective(children.state);
-      // Ponemos un 1 en el action porque siempre está desde la perspectiva del 1
+      // Ponemos un 1 en el move porque siempre está desde la perspectiva del 1
     children.state = game.getNextState(children.state,selectedMove,children.player);
     // Calculamos los movimientos expandibles del nodo hijo
     children.expandableMoves = game.getValidMoves(children.state);
@@ -273,7 +297,7 @@ const MCTSelectBestNode = (root) =>{
     let ucbList = root.children.map(child => MCGetUcb(child,root,1.42));
     let bestUCB = Math.max(...ucbList);
     let bestChild = root.children[ucbList.findIndex(ucb => ucb === bestUCB)];
-   // console.log("Select",ucbList,bestUCB,bestChild.actionTaken, bestChild.visits, bestChild.value);
+   // console.log("Select",ucbList,bestUCB,bestChild.moveTaken, bestChild.visits, bestChild.value);
     return MCTSelectBestNode(bestChild);
     
    } // Si no está expandido se retorna a sí mismo
@@ -284,7 +308,7 @@ const MCTSelectBestNode = (root) =>{
 
 const MCSimulate = (game) => (node) => {
     
-    let {win, terminated} = game.getWinAndTerminated(node.state, node.actionTaken);
+    let {win, terminated} = game.getWinAndTerminated(node.state, node.moveTaken);
     if (terminated) { 
       //  console.log("El propio nodo ha terminado", win, "\n",MCStateToString(node.state));
         if(node.player == -1){ win = -win;}
@@ -293,14 +317,14 @@ const MCSimulate = (game) => (node) => {
     let state_copy = structuredClone(node.state);
     let player = -node.player;
     while(true){
-        let action = MCGetRandomAction(game.getValidMoves(state_copy));
-        state_copy = game.getNextState(state_copy,action,player);
+        let move = MCGetRandomMove(game.getValidMoves(state_copy));
+        state_copy = game.getNextState(state_copy,move,player);
         //console.log(state_copy);
-        let {win, terminated} = game.getWinAndTerminated(state_copy, action);
+        let {win, terminated} = game.getWinAndTerminated(state_copy, move);
         if(terminated){
             if(player == -1){ win = -win;}
             //console.log(state_copy);
-           // console.log("Termina el jugador:",player, win, action,  "\n",MCStateToString(state_copy));
+           // console.log("Termina el jugador:",player, win, move,  "\n",MCStateToString(state_copy));
       
             return win;
         }
@@ -329,7 +353,7 @@ function MCTSearch(game, state, numSearches){
 
     let root = {
         state: state,
-        actionTaken: null,
+        moveTaken: null,
         value: 0, 
         visits: 0, 
         expandableMoves: [...game.getValidMoves(state)],
@@ -341,7 +365,7 @@ function MCTSearch(game, state, numSearches){
         // Selecciona de forma recursiva el mejor nodo si ya se ha expandido o el mismo:
         let node = MCTSelectBestNode(root);
         // comprueba las ganancias del mejor nodo y si ha terminado
-        let {win, terminated} = game.getWinAndTerminated(node.state, node.actionTaken);
+        let {win, terminated} = game.getWinAndTerminated(node.state, node.moveTaken);
         // Pone el value a -win para el backpropagate
         let value = win;
 
@@ -364,21 +388,22 @@ function MCTSearch(game, state, numSearches){
     }
 
 
-    let actionWins = Array(game.actionSize).fill(0);
-    let actionVisits = Array(game.actionSize).fill(0);
+    let moveWins = Array(game.moveSize).fill(0);
+
+    let moveVisits = Array(game.moveSize).fill(0);
     for(let child of root.children){
-        actionWins[child.actionTaken] = child.value;
-        actionVisits[child.actionTaken] = child.visits;
+        moveWins[child.moveTaken] = child.value;
+        moveVisits[child.moveTaken] = child.visits;
     }
     
-    let winsTotal = actionWins.reduce((p,v)=> p+v);
-    //console.log(root,actionWins,actionVisits,winsTotal);
+    let winsTotal = moveWins.reduce((p,v)=> p+v);
+    //console.log(root,moveWins,moveVisits,winsTotal);
    
     let rootNoParent = structuredClone(root);
     removeAttribute(rootNoParent,'parent');
-   // console.log(rootNoParent);
-
-    return actionWins.map( v=> v/winsTotal);
+    console.log(rootNoParent);
+//console.log(moveWins);
+    return moveWins.map( v=> v/winsTotal);
 }
 
 

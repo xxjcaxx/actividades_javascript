@@ -58,7 +58,7 @@ describe('3 en raya', function() {
 
 describe('Montecarlo', function() {
   const game = {
-    actionSize: 9,
+    moveSize: 9,
     getValidMoves: alg.TicTacToeGetValidMoves,
     getInitialState: alg.TicTacToeGetInitialState,
     getNextState: alg.TicTacToeGetNextState,
@@ -68,7 +68,7 @@ describe('Montecarlo', function() {
   }
   const exampleNode = {
     state: [[0,-1,0],[0,1,0],[0,0,0]],
-    actionTaken: 1,
+    moveTaken: 1,
     value: 0,
     visits: 0,
     expandableMoves: [1,0,1, 1,0,1, 1,1,1],
@@ -78,7 +78,7 @@ describe('Montecarlo', function() {
   }
   const exampleExpandedNode = {
     state: [[-1,1,-1],[1,-1,1],[1,-1,0]],
-    actionTaken: 1,
+    moveTaken: 1,
     value: 2,
     visits: 5,
     expandableMoves: [0,0,0, 0,0,0, 0,0,0],
@@ -87,7 +87,7 @@ describe('Montecarlo', function() {
     children: [
       {
         state: [[1,-1,1],[-1,1,-1],[-1,1,-1]],
-        actionTaken: 8,
+        moveTaken: 8,
         value: 1,
         visits: 4,
         expandableMoves: [0,0,0, 0,0,0, 0,0,0],
@@ -99,6 +99,15 @@ describe('Montecarlo', function() {
   exampleExpandedNode.children[0].parent = exampleExpandedNode;
 
     describe('Funciones auxiliares', function() {
+
+      it('MCGetRandomMove Debe retornar un movimiento válido aleatorio', function() {
+        expect(alg.MCGetRandomMove([0,0,1,0])).toBe(2);
+        for(let i=0; i<10; i++){
+          expect(alg.MCGetRandomMove(exampleNode.expandableMoves)).not.toBe(1);
+          expect(alg.MCGetRandomMove(exampleNode.expandableMoves)).not.toBe(4);
+        }
+
+      });
       it('MCExpandNode Debe retornar el nodo expandido', function() {
         /*
         Ejemplo de cómo puede quedar el nodo después de expandir:
@@ -133,7 +142,7 @@ describe('Montecarlo', function() {
         // El nodo hijo tiene state y está invertido respecto al padre
         expect(exampleNodeCopy.children[0].state[0][1]).toBe(-1);
         // En la posición donde se ha elegido hacer el movimiento hay un -1, que es el 1 invertido
-        expect(exampleNodeCopy.children[0].state.flat()[exampleNodeCopy.children[0].actionTaken]).toBe(1);
+        expect(exampleNodeCopy.children[0].state.flat()[exampleNodeCopy.children[0].moveTaken]).toBe(1);
         });
    
   
@@ -174,6 +183,7 @@ describe('Montecarlo', function() {
     while (winner === 0){
       let bestMoves = players[currentPlayer](game,state,1000);
       let bestMove = Math.max(...bestMoves);
+     // console.log(bestMove, bestMoves);
       bestMove = bestMoves.findIndex(m => m === bestMove);
       state = game.getNextState(state,bestMove,currentPlayer === 0 ? 1 : -1);
       let winAndTerminated = game.getWinAndTerminated(state,bestMove);
@@ -182,7 +192,7 @@ describe('Montecarlo', function() {
         winner = winAndTerminated.win === 1 ? 1 : -1;
       }
       currentPlayer = currentPlayer === 0 ? 1 : 0;
-      //console.log(alg.MCStateToString(state));
+      console.log(alg.MCStateToString(state));
 
     }
     MCTSWins = winner === 1 ? MCTSWins+1: MCTSWins;
