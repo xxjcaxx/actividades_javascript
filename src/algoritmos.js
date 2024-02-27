@@ -6,7 +6,7 @@ export {TicTacToeGetInitialState,
     TicTacToeChangePlayer,
     TicTacToeChangePerspective,
     MCExpandNode, MCIsFullExpandedNode,
-    MCGetUcb, MCTSearch
+    MCGetUcb, MCTSearch, MCStateToString
 }
 
 /**
@@ -150,13 +150,14 @@ const game = {
 Esto se hará cuando se quiera usar el algoritmo.
 */
 
-const MCStateToString = (state, player) => {
-    return `${state.map(row => row.map(col => col === 0 ? '_' : col*player === 1 ? 'O' : 'X').join(' ')).join('\n')}`; 
+const MCStateToString = (state) => {
+    return `
+${state.map(row => row.map(col => col === 0 ? '_' : col === 1 ? 'O' : 'X').join(' ')).join('\n')}`; 
 }
 
-const MCGetRandomAction = (state) => {
-    let validMoves = game.getValidMoves(state);
-        let possibleMoves = validMoves.reduce((eM,current,index)=>{ 
+const MCGetRandomAction = (validMoves) => {
+   // let validMoves = game.getValidMoves(state);
+    let possibleMoves = validMoves.reduce((eM,current,index)=>{ 
             if(current === 1) { eM.push(index)}
             return eM;
          },[]);
@@ -188,14 +189,8 @@ const MCExpandNode = (game)=> (node)=> {
     entre los válidos. Además, el nodo hijo tendrá el estado con la perspectiva invertida, ya que cambia el jugador
 
     */
-    
-    let possibleMoves = node.expandableMoves.reduce((eM,current,index)=>{ 
-        if(current === 1) { eM.push(index)}
-        return eM;
-     },[]);
-     
-    let selectedMove = possibleMoves[Math.floor(Math.random()*possibleMoves.length)];
-     // Anulamos ya ese movimiento como posible expansión
+
+    let selectedMove = MCGetRandomAction(node.expandableMoves); 
     node.expandableMoves[selectedMove] = 0;
     
     let children = {
@@ -212,9 +207,9 @@ const MCExpandNode = (game)=> (node)=> {
     children.state = structuredClone(node.state);
   
     // Cambiamos de nuevo la perspectiva para que siempre sea la del 1
-    children.state = game.changePerspective(children.state);
+    //children.state = game.changePerspective(children.state);
       // Ponemos un 1 en el action porque siempre está desde la perspectiva del 1
-      children.state = game.getNextState(children.state,selectedMove,1);
+    children.state = game.getNextState(children.state,selectedMove,children.player);
     // Calculamos los movimientos expandibles del nodo hijo
     children.expandableMoves = game.getValidMoves(children.state);
     // Añadimos el nodo hijo
@@ -257,7 +252,7 @@ const MCGetUcb = (node, parentNode, C) => {
     Esta función recibe el nodo, el nodo padre y C y retorna el valor de UCB
     */
    //console.log("UCB", node,parentNode,C);
-    let qValue = 1 - ((node.value / node.visits)+1) / 2
+    let qValue = node.value / node.visits
     //console.log(node.value, node.visits, qValue);
     return qValue + C * Math.sqrt(Math.log(parentNode.visits)/ node.visits)
 }
@@ -290,22 +285,22 @@ const MCTSelectBestNode = (root) =>{
 const MCSimulate = (game) => (node) => {
     
     let {win, terminated} = game.getWinAndTerminated(node.state, node.actionTaken);
-    let value = -win;
     if (terminated) { 
-        console.log("El propio nodo ha terminado", value, "\n",MCStateToString(node.state));
-        return value;
+      //  console.log("El propio nodo ha terminado", win, "\n",MCStateToString(node.state));
+        if(node.player == -1){ win = -win;}
+        return win;
     }
     let state_copy = structuredClone(node.state);
-    let player = 1;
+    let player = -node.player;
     while(true){
-        let action = MCGetRandomAction(state_copy);
+        let action = MCGetRandomAction(game.getValidMoves(state_copy));
         state_copy = game.getNextState(state_copy,action,player);
-        console.log(state_copy);
+        //console.log(state_copy);
         let {win, terminated} = game.getWinAndTerminated(state_copy, action);
         if(terminated){
             if(player == -1){ win = -win;}
-            console.log(state_copy);
-            console.log("Termina el jugador:",player, win, action,  "\n",MCStateToString(state_copy,node.player));
+            //console.log(state_copy);
+           // console.log("Termina el jugador:",player, win, action,  "\n",MCStateToString(state_copy));
       
             return win;
         }
@@ -318,7 +313,7 @@ const MCBackPropagate = (node,value) => {
     node.value += value;
     node.visits += 1;
     //console.log(node.state);
-    console.log("Backpropagate\n", MCStateToString(node.state, node.player),"\n",{player: node.player, value: node.value, entry_value: value,visits: node.visits} ); 
+    //console.log("Backpropagate\n", MCStateToString(node.state),"\n",{player: node.player, value: node.value, entry_value: value,visits: node.visits} ); 
     value = -value;
     if (node.parent){
         MCBackPropagate(node.parent,value);
@@ -348,7 +343,7 @@ function MCTSearch(game, state, numSearches){
         // comprueba las ganancias del mejor nodo y si ha terminado
         let {win, terminated} = game.getWinAndTerminated(node.state, node.actionTaken);
         // Pone el value a -win para el backpropagate
-        let value = -win;
+        let value = win;
 
         if (!terminated){
             // Si no ha terminado, se expande:
@@ -356,27 +351,34 @@ function MCTSearch(game, state, numSearches){
             // Sobre el nodo expandido se simula hasta el final una partida:
             value = MCSimulate(game)(node);
         }
+        if(terminated && value === 1 && node.parent === root){
+            // Que gane haciendo un solo movimiento
+            value = Number.MAX_SAFE_INTEGER;
+            search = numSearches;
+        }
         //console.debug(terminated,value);
         value = node.player*value;  //?
 
         MCBackPropagate(node,value);
-        console.log("Acaba Search",search, "root value", root.value, root.visits);
+       // console.log("Acaba Search",search, "root value", root.value, root.visits);
     }
 
 
+    let actionWins = Array(game.actionSize).fill(0);
     let actionVisits = Array(game.actionSize).fill(0);
     for(let child of root.children){
-        actionVisits[child.actionTaken] = child.visits
+        actionWins[child.actionTaken] = child.value;
+        actionVisits[child.actionTaken] = child.visits;
     }
     
-    let visitsTotal = actionVisits.reduce((p,v)=> p+v);
-    console.log(root,actionVisits,visitsTotal);
+    let winsTotal = actionWins.reduce((p,v)=> p+v);
+    //console.log(root,actionWins,actionVisits,winsTotal);
    
     let rootNoParent = structuredClone(root);
     removeAttribute(rootNoParent,'parent');
-    console.log(rootNoParent);
+   // console.log(rootNoParent);
 
-    return actionVisits.map( v=> v/visitsTotal);
+    return actionWins.map( v=> v/winsTotal);
 }
 
 

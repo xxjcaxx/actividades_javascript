@@ -30,9 +30,9 @@ describe('3 en raya', function() {
         });
 
         it('TicTacToeGetWinAndTerminated Debe retornar si ha ganado o no el jugador y si la partida a acabado', function() {
-          expect(alg.TicTacToeGetWinAndTerminated(example_state,1)).toEqual({win:false,terminated: false});
-          expect(alg.TicTacToeGetWinAndTerminated(full_state,1)).toEqual({win:false,terminated: true});
-          expect(alg.TicTacToeGetWinAndTerminated(win_state,4)).toEqual({win:true,terminated: true});
+          expect(alg.TicTacToeGetWinAndTerminated(example_state,1)).toEqual({win:0,terminated: false});
+          expect(alg.TicTacToeGetWinAndTerminated(full_state,1)).toEqual({win:0,terminated: true});
+          expect(alg.TicTacToeGetWinAndTerminated(win_state,4)).toEqual({win:1,terminated: true});
         });
         it('TicTacToeChangePerspective Debe retornar el juego invertido', function() {
           //console.log(alg.TicTacToeChangePerspective(example_state));
@@ -50,7 +50,7 @@ describe('3 en raya', function() {
       }
       expect(state).toEqual([[-1,1,1],[0,1,0],[1,-1,-1]]);
       expect(alg.TicTacToeCheckWin(state,move_list.at(-1))).toBe(true);
-      expect(alg.TicTacToeGetWinAndTerminated(state,move_list.at(-1))).toEqual({win:true, terminated: true});
+      expect(alg.TicTacToeGetWinAndTerminated(state,move_list.at(-1))).toEqual({win:1, terminated: true});
       });
     });
    });
@@ -73,6 +73,7 @@ describe('Montecarlo', function() {
     visits: 0,
     expandableMoves: [1,0,1, 1,0,1, 1,1,1],
     parent: null,
+    player: -1,
     children: []
   }
   const exampleExpandedNode = {
@@ -82,6 +83,7 @@ describe('Montecarlo', function() {
     visits: 5,
     expandableMoves: [0,0,0, 0,0,0, 0,0,0],
     parent: null,
+    player: -1,
     children: [
       {
         state: [[1,-1,1],[-1,1,-1],[-1,1,-1]],
@@ -121,7 +123,7 @@ describe('Montecarlo', function() {
         
         let exampleNodeCopy = structuredClone(exampleNode);
         alg.MCExpandNode(game)(exampleNodeCopy);
-        //console.log(exampleNodeCopy);
+        console.log(exampleNodeCopy);
         // Crea un nodo hijo
         expect(exampleNodeCopy.children.length).toBe(1);
         // El nodo padre tiene un expandableMoves menos 
@@ -131,7 +133,7 @@ describe('Montecarlo', function() {
         // El nodo hijo tiene state y está invertido respecto al padre
         expect(exampleNodeCopy.children[0].state[0][1]).toBe(-1);
         // En la posición donde se ha elegido hacer el movimiento hay un -1, que es el 1 invertido
-        expect(exampleNodeCopy.children[0].state.flat()[exampleNodeCopy.children[0].actionTaken]).toBe(-1);
+        expect(exampleNodeCopy.children[0].state.flat()[exampleNodeCopy.children[0].actionTaken]).toBe(1);
         });
    
   
@@ -144,15 +146,51 @@ describe('Montecarlo', function() {
     });
 
     it('MCGetUcb Debe retornar el UCB', function() {
-      expect(alg.MCGetUcb(exampleExpandedNode.children[0],exampleExpandedNode,1.41)).toBeCloseTo(1.26, 1);
+      expect(alg.MCGetUcb(exampleExpandedNode.children[0],exampleExpandedNode,1.41)).toBeCloseTo(1.44, 1);
     });
 
     it('MTCSearch Debe retornar la mejor jugada', function() {
-
-      expect(alg.MCTSearch(game,exampleNode.state,100)).toBeInstanceOf(Array)
+      let wins = alg.MCTSearch(game,exampleNode.state,1000);
+      console.log(wins);
+      expect(wins).toBeInstanceOf(Array)
     });
+
+
  
  
+  });
+
+  describe('Juego completo MCTS', function() {
+    it('Debe ganar casi siempre las 10 partidas contra un jugador Random', function() {
+    let randomPlayer = (game,state,n_searches) => {
+      return game.getValidMoves(state).map(m => m*Math.random())
+    }
+    let MCTSWins = 0;
+    for(let i=0; i<10; i++){
+    let state = game.getInitialState();
+    let players = [alg.MCTSearch, randomPlayer];
+    let currentPlayer = 0;
+    let winner = 0;
+    while (winner === 0){
+      let bestMoves = players[currentPlayer](game,state,1000);
+      let bestMove = Math.max(...bestMoves);
+      bestMove = bestMoves.findIndex(m => m === bestMove);
+      state = game.getNextState(state,bestMove,currentPlayer === 0 ? 1 : -1);
+      let winAndTerminated = game.getWinAndTerminated(state,bestMove);
+      //console.log(winAndTerminated);
+      if(winAndTerminated.terminated){
+        winner = winAndTerminated.win === 1 ? 1 : -1;
+      }
+      currentPlayer = currentPlayer === 0 ? 1 : 0;
+      //console.log(alg.MCStateToString(state));
+
+    }
+    MCTSWins = winner === 1 ? MCTSWins+1: MCTSWins;
+  }
+   
+    expect(MCTSWins).toBeCloseTo(10);
+    
+    });
   });
    
    });
