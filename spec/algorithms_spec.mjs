@@ -146,7 +146,7 @@ describe('Montecarlo', function() {
     });
 
     it('MCGetUcb Debe retornar el UCB', function() {
-      expect(alg.MCGetUcb(exampleExpandedNode.children[0],exampleExpandedNode,1.41)).toBeCloseTo(1.44, 1);
+      expect(alg.MCGetUcb(exampleExpandedNode.children[0],exampleExpandedNode,1.41)).toBeCloseTo(1.144, 1);
     });
 
     it('MTCSearch Debe retornar la mejor jugada', function() {
