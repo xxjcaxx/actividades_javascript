@@ -158,6 +158,47 @@ describe('Montecarlo', function() {
       expect(alg.MCGetUcb(exampleExpandedNode.children[0],exampleExpandedNode,1.41)).toBeCloseTo(1.144, 1);
     });
 
+    it('MCTSelectBestNode Debe retornar el mejor nodo', function() {
+      let simplifiedChild = {value: 3, visits: 3, expandableMoves: [0,0,0,0,0,0,0,1,0]};
+      let simplifiedNode = {
+        value: 3,
+        visits: 8,
+        expandableMoves: [0,0,0,0,0,0,0,0,0],
+        children: [
+         simplifiedChild, 
+         {value: 1, visits: 2,expandableMoves: [0,0,0,0,0,0,0,0,1]},
+         {value: -3, visits: 3, expandableMoves: [0,0,0,1,0,0,0,0,0]},
+         {value: -1, visits: 1, expandableMoves: [0,0,0,0,1,0,0,0,0]} 
+        ]
+      }
+      expect(alg.MCTSelectBestNode(simplifiedNode)).toBe(simplifiedChild)
+    });
+
+
+    it('MCSimulate Debe retornar un ganador de la simulación', function() {
+      expect([-1,0,1]).toContain(alg.MCSimulate(game)(exampleNode));
+    });
+
+    it('MCBackPropagate Debe propagar el resultado de la simulación', function() {
+      let simplifiedChildChild = {value: 0, visits: 0};
+      let simplifiedChild = {value: 1, visits: 1, children: [{value: 0, visits: 1},simplifiedChildChild]};
+      let simplifiedNode = {
+        value: 3,
+        visits: 8,
+        children: [
+         simplifiedChild,
+         {value: -3, visits: 3}
+        ]
+      }
+      simplifiedChild.parent = simplifiedNode;
+      simplifiedChildChild.parent = simplifiedChild;
+     
+      alg.MCBackPropagate(simplifiedChildChild,1);
+      expect([simplifiedNode.value, simplifiedNode.visits]).toEqual([4,9]);
+      expect([simplifiedChild.value, simplifiedChild.visits]).toEqual([0,2]);
+      expect([simplifiedChildChild.value, simplifiedChildChild.visits]).toEqual([1,1]);
+    });
+
     it('MTCSearch Debe retornar la mejor jugada', function() {
       let wins = alg.MCTSearch(game,exampleNode.state,1000);
       console.log(wins);

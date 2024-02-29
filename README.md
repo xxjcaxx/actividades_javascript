@@ -53,8 +53,11 @@ Los tests para el proyecto Sudoku:
 
 Si queremos probar que el sudoku funciona, hay una carpeta "web_sudoku" con un html y js que necesitan la biblioteca para funcionar y ser arrancados desde un servidor de pruebas como la extensión "Live Server" de VS Code.
 
-También se plantea un conjunto de funciones relacionadas con el ajedrez:
+También se plantea un conjunto de funciones temáticas relacionadas con el ajedrez:
 > npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-chess.json
 
+Si se quiere profundizar en algortimos, más que en las particularidades del lenguaje, se puede intentar hacer los ejercicios planteados en este test:
+> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-algorithms.json
 
-Si resulta muy difícil o los enunciados son confusos, en la carpeta "soluciones" se puede ver cómo he implementado yo el sudoku. 
+
+Si resulta muy difícil o los enunciados son confusos, en la carpeta "soluciones" se puede ver cómo he implementado yo el sudoku o los algoritmos. 
