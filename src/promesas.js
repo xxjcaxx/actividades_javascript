@@ -1,6 +1,6 @@
 export {delayedFunction, delayPromiseFunction, promisify, rejectify, headsOrTailsPromise, fakeNetwork,
     getMultipleData, getMultipleDataPromises, getMultipleDataSequential,
-    getMultipleDataTimeoutCancellable
+    getMultipleDataTimeoutCancellable, functionDebounce
 }
 
 function delayedFunction(callback,time){
@@ -91,5 +91,4 @@ function functionDebounce(fn,debounceTime){
     Pero si se vuelve a invocar en menos tiempo del debounceTime, 
     la promesa anterior será rechazada y retornará la promesa de volver a intentarlo.
     */
-
 }

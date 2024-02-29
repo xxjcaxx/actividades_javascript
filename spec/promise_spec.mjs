@@ -1,6 +1,6 @@
 import { delayedFunction, delayPromiseFunction, promisify, rejectify, headsOrTailsPromise,
   fakeNetwork, getMultipleData, getMultipleDataPromises, getMultipleDataSequential,
-  getMultipleDataTimeoutCancellable
+  getMultipleDataTimeoutCancellable, functionDebounce
 } from "../src/promesas.js";
 
 describe('Promesas', function () {
@@ -113,14 +113,40 @@ describe('Promesas', function () {
       try {
       await promise;
       // Se ha llamado al callback
-      console.log("Exito",arrayAux);
+      
       expect(arrayAux).toEqual(['1','2','3','4','5','6']);
       expect(callback).toHaveBeenCalled();
       } catch (error) {
-        console.log("Error",error);
         expect(typeof(error)).toBe('number');
         expect(callback).not.toHaveBeenCalled();
       }
+    });
+
+    it('functionDebounce ejecutar la función en un tiempo o ser cancelado si llega otra antes', async function () {
+      let arrayAux = [];
+      window.addArray = function addArray(n){arrayAux.push(n)}
+      let callback = spyOn(window,'addArray').and.callThrough();
+      let addArrayDebounced = functionDebounce(window.addArray,400);
+      let arrayPromises = [];
+      arrayPromises[0] = addArrayDebounced(1)
+      arrayPromises[1] = new Promise((resolve,reject)=>{
+        setTimeout(()=>{addArrayDebounced(2).then(resolve).catch(reject)},200);
+      });
+      arrayPromises[2] = new Promise((resolve,reject)=>{
+        setTimeout(()=>{addArrayDebounced(3).then(resolve).catch(reject)},300);
+      });
+      arrayPromises[3] = new Promise((resolve,reject)=>{
+        setTimeout(()=>{addArrayDebounced(4).then(resolve).catch(reject)},800);
+      });
+
+      let values = await Promise.allSettled(arrayPromises)
+      expect(values[0].status).toBe('rejected');
+      expect(values[1].status).toBe('rejected');
+      expect(values[2].status).toBe('fulfilled');
+      expect(values[3].status).toBe('fulfilled');
+      expect(arrayAux).toEqual([3,4]);
+
+     
     });
 
   });
