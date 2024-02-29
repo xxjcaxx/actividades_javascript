@@ -2,7 +2,9 @@ import {
     student, arbitraryArgs, getMax, getDistance,
     shiftArray, allShiftsArray, allShiftsString, allNames, removeEmpties,
     groupByWeeks, filterTeam, getPoints, applyPermutations, Arithmetic,
-    compose, stringToArray, reverseArray, joinArrayToString, reverseString
+    compose, stringToArray, reverseArray, joinArrayToString, reverseString,
+    memoize, ensureOneCall
+
 } from "../src/javascript_programacion_funcional.js"
 
 // Función auxiliar para descargar datos de localhost
@@ -302,6 +304,44 @@ describe('Programación Funcional', function () {
             expect(reversed).toBe("edcba");
         });
  
+    });
+
+    describe('Memoize', function () {
+        let callback;
+        beforeEach(() => {
+          // Crear spy para callback 
+          callback = jasmine.createSpy('callback');
+        });
+  
+        it('memoize debe retornar una función "memoizada"', function () {
+            window.sum = (a,b) => a+b;
+            let callback = spyOn(window,'sum').and.callThrough();
+            const memoizedSum = memoize(window.sum);
+            expect(memoizedSum(5,4)).toBe(9);
+            expect(callback).toHaveBeenCalled();
+            expect(memoizedSum(5,3)).toBe(8);
+            expect(memoizedSum(5,4)).toBe(9);
+            expect(callback).toHaveBeenCalledTimes(2);
+        });
+    });
+
+    describe('Ensure One Call', function () {
+        let callback;
+        beforeEach(() => {
+          // Crear spy para callback 
+          callback = jasmine.createSpy('callback');
+        });
+
+    
+        it('ensureOneCall debe llamar sólo una vez a la función', function () {
+            window.sum = (a,b) => a+b;
+            let callback = spyOn(window,'sum').and.callThrough();
+            const onceSum = ensureOneCall(window.sum);
+            expect(onceSum(5,4)).toBe(9);
+            expect(callback).toHaveBeenCalled();
+            expect(onceSum(5,3)).toBe(undefined);
+            expect(callback).toHaveBeenCalledTimes(1);
+        });
     });
 
 

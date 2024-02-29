@@ -1,5 +1,6 @@
 export {delayedFunction, delayPromiseFunction, promisify, rejectify, headsOrTailsPromise, fakeNetwork,
-    getMultipleData, getMultipleDataPromises, getMultipleDataSequential
+    getMultipleData, getMultipleDataPromises, getMultipleDataSequential,
+    getMultipleDataTimeoutCancellable
 }
 
 function delayedFunction(callback,time){
@@ -59,6 +60,36 @@ function getMultipleDataSequential(urls,callback){
     */
 }
 
+function getMultipleDataTimeoutCancellable(urls,callback,time){
+    /*
+    Esta función hará una petición a cada elemento del array y retorna la
+    promesa de ejecutar los callbacks.
+    Para cada elemento debe ejecutar el callback.
+    En caso de que, pasado un tiempo no se consigan todas las peticiones,
+    no ejecutará ninguno de los callbacks y retornará un reject informando
+    de la cantidad de peticiones incumplidas. 
+    En caso de que se consigan todas, ejecutará el callback y retornará un resolve.
+    */    
+}
 
 
+function functionDebounce(fn,debounceTime){
 
+    /*
+    Debounce es un término que se usa para retardar la ejecución de una función
+    Al mismo tiempo, si en el tiempo retardado se vuelve a llamar, la primera
+    queda descartada y se ejecuta la segunda en el tiempo indicado a partir de cuando se ejecuta. 
+
+    Por ejemplo:
+    |12------3--4--5------6-7-8----9----------------------->
+    |-----2------------5----------8----9------------------->
+
+    Cada guión (-) representa 100 milisegundos i hay un debounceTime de 400ms 
+
+    Esta función acepta una función y un debounceTime y retorna otra funcion
+    Esta otra función retornará la promesa de ejecutar la primera función pasado el debounceTime
+    Pero si se vuelve a invocar en menos tiempo del debounceTime, 
+    la promesa anterior será rechazada y retornará la promesa de volver a intentarlo.
+    */
+
+}

@@ -328,3 +328,12 @@ function removeAttribute(object,attribute){
     }
 }
 
+
+
+/*
+Bloque 3: Retos algortítmicos
+
+En este bloque se pide solucionar retos que son más complicados algorítmicamente 
+que la dificultad que plantea el lenguaje Javascript
+*/
+

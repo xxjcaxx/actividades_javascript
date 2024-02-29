@@ -1,5 +1,6 @@
 import { delayedFunction, delayPromiseFunction, promisify, rejectify, headsOrTailsPromise,
-  fakeNetwork, getMultipleData, getMultipleDataPromises, getMultipleDataSequential
+  fakeNetwork, getMultipleData, getMultipleDataPromises, getMultipleDataSequential,
+  getMultipleDataTimeoutCancellable
 } from "../src/promesas.js";
 
 describe('Promesas', function () {
@@ -101,6 +102,25 @@ describe('Promesas', function () {
       // Se ha llamado al callback
       expect(callback).toHaveBeenCalled();
       expect(arrayAux).toEqual(['1','2','3','4','5','6']);
+    });
+
+    it('getMultipleDataTimeoutCancellable debe retornar la promesa de ejecutar el callback en un tiempo máximo', async function () {
+      let arrayAux = [];
+      window.addArray = function addArray(n){arrayAux.push(n)}
+      let callback = spyOn(window,'addArray').and.callThrough();
+      let promise = getMultipleDataTimeoutCancellable(['1','2','3','4','5','6'],addArray,800);
+      expect(promise).toBeInstanceOf(Promise);
+      try {
+      await promise;
+      // Se ha llamado al callback
+      console.log("Exito",arrayAux);
+      expect(arrayAux).toEqual(['1','2','3','4','5','6']);
+      expect(callback).toHaveBeenCalled();
+      } catch (error) {
+        console.log("Error",error);
+        expect(typeof(error)).toBe('number');
+        expect(callback).not.toHaveBeenCalled();
+      }
     });
 
   });

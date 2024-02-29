@@ -1,7 +1,8 @@
 // Programación funcional
 export {student, arbitraryArgs, getMax, getDistance, shiftArray, allShiftsArray, allShiftsString,
     allNames, removeEmpties, groupByWeeks, filterTeam, getPoints, applyPermutations, Arithmetic,
-    compose, stringToArray, reverseArray, joinArrayToString, reverseString
+    compose, stringToArray, reverseArray, joinArrayToString, reverseString,
+    memoize, ensureOneCall
 };
 
 // Funciones puras
@@ -296,3 +297,31 @@ const reverseString = (string) => {
    
 }
 
+
+
+////////  Memoize
+
+const memoize = (fn) => {
+    /*
+    Esta función acepta una función y retorna una función con una nueva utilidad
+    la nueva función hará lo mismo que la que se pasa por parámetros
+    pero además, nunca la llamará dos veces con los mismo argumentos. 
+    Si se invoca a la nueva función con argumentos con los que ya se ha llamado, 
+    retornará un valor guardado en caché. 
+
+    Pista: Puedes convertir los argumentos a string y usar un Map
+    */
+}
+
+
+
+////////////  Ensure One Call
+
+const ensureOneCall = (fn) => {
+    /*
+    Esta función acepta una función y retorna una nueva que funciona igual
+    No obstante la nueva sabe si ya se ha invocado y, en caso de repetición,
+    retorna undefined
+    */
+
+}
