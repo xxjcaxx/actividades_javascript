@@ -1,4 +1,4 @@
-export {makeIterable, range, arrayLike, salarios, makeRecordSet};
+export {makeIterable, range, arrayLike, salarios, flatGenerator};
 
 function makeIterable(...items){
    /*
@@ -28,4 +28,12 @@ let salarios = {
   };
 
 
+  function flatGenerator(array){
+    /*
+    Recibe un array multidimensional y retorna un iterable que permite
+    recorrer los elementos del array de izquierda a derecha
+    Por ejemplo, a esta entrada: [[[6]],[1,3],[]]
+    le correspone estar salida: [6,1,3]
+    */
+  }
 

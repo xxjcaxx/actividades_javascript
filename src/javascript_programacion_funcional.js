@@ -2,7 +2,7 @@
 export {student, arbitraryArgs, getMax, getDistance, shiftArray, allShiftsArray, allShiftsString,
     allNames, removeEmpties, groupByWeeks, filterTeam, getPoints, applyPermutations, Arithmetic,
     compose, stringToArray, reverseArray, joinArrayToString, reverseString,
-    memoize, ensureOneCall
+    memoize, ensureOneCall, createArray, unFlat,cartesianProduct,innerJoin,leftJoin
 };
 
 // Funciones puras
@@ -183,6 +183,45 @@ function getPoints(matches){
   
   Recuerda que esto es un ejercicio, no usar bucles no es, por definición, mejor. 
   En una situación real, debes usar el código que queda más legible. 
+    */
+}
+
+
+function createArray(length, generatorFunction) {
+/*
+Esta función retorna un array de la longitud indicada con los elementos
+generados por generatorFunction, que acepta el array que se está generando y 
+el índice. 
+*/
+}
+
+function unFlat(array,chunk){
+/*
+Esta función accepta un array y el tamaño de la división para retornar
+un array bidimensional con la filas del tamaño del "chunk"
+*/
+}
+
+function cartesianProduct(array1, array2){
+    /*
+    Una función que retorna el producto cartesiano de dos arrays
+    es decir, un array bidimensional con todas las combinaciones
+    */
+}
+
+function innerJoin(array1, array2, relationFunction){
+    /*
+    Una función que, de dos arrays de objetos con una relación entre 
+    ellos definida con una función, obtenga el INNER JOIN. 
+    La función acepta dos objetos para decir si están relacionados.
+    */
+}
+
+function leftJoin(array1, array2, relationFunction){
+    /*
+    Una función que, de dos arrays de objetos con una relación entre 
+    ellos definida con una función, obtenga el LEFT JOIN. 
+    La función acepta dos objetos para decir si están relacionados.
     */
 }
 

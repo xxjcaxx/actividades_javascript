@@ -246,3 +246,20 @@ describe('Montecarlo', function() {
    
    });
 
+describe('Retos', () => {
+  describe('Sencillos', () => {
+    it('MiddleOfArray debería retornar de la mitad para adelante de un array', () => {
+      const par = [1,2,3,4,5,6];
+      const impar = [1,2,3,4,5];
+      expect(alg.middleOfArray(par)).toBeInstanceOf(Array);
+      expect(alg.middleOfArray(par)).toEqual([4,5,6]);
+      expect(alg.middleOfArray(impar)).toEqual([3,4,5]);
+      expect(par).toEqual([1,2,3,4,5,6]); // no mutar
+    });
+    it('sumMultiples debería retornar la suma de los múltiplos', () => {
+      const numbers = [3,5];
+     expect(alg.sumMultiples(numbers,10)).toBe(23);
+     expect(alg.sumMultiples(numbers,16)).toBe(60);
+    });
+  });
+});

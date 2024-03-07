@@ -1,4 +1,4 @@
-import { makeIterable, range, arrayLike, salarios, makeRecordSet } from "../src/iterables.js";
+import { makeIterable, range, arrayLike, salarios,  flatGenerator } from "../src/iterables.js";
 
 describe('Iterables', function() {
     describe('Crear Iterables', function() {
@@ -40,6 +40,13 @@ describe('Iterables', function() {
         expect(salarios).not.toBeInstanceOf(Array);
         expect(salarios).not.toBeInstanceOf(Set);
         expect(salarios).not.toBeInstanceOf(Map);
+      });
+      it('flatGenerator debería devolver un iterable para ver los elementos de izquierda a derecha' , function() {
+        expect(Array.from(flatGenerator([[[6]],[1,3],[]]))).toEqual([6,1,3]);
+        expect([...flatGenerator([[[6]],[1,3],[]])]).toEqual([6,1,3]);
+        expect(flatGenerator([[[6]],[1,3],[]])).not.toBeInstanceOf(Array);
+        expect(flatGenerator([[[6]],[1,3],[]])).not.toBeInstanceOf(Set);
+        expect(flatGenerator([[[6]],[1,3],[]])).not.toBeInstanceOf(Map);
       });
     });
    

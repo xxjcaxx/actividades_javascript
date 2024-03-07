@@ -7,7 +7,10 @@ export {TicTacToeGetInitialState,
     TicTacToeChangePerspective,
     MCExpandNode, MCIsFullExpandedNode, MCTSelectBestNode,
     MCSimulate, MCBackPropagate,
-    MCGetUcb, MCTSearch, MCStateToString, MCGetRandomMove
+    MCGetUcb, MCTSearch, MCStateToString, MCGetRandomMove,
+
+    middleOfArray, 
+    sumMultiples
 }
 
 /**
@@ -337,3 +340,22 @@ En este bloque se pide solucionar retos que son más complicados algorítmicamen
 que la dificultad que plantea el lenguaje Javascript
 */
 
+
+// Dificultad: Sencillo
+function middleOfArray(array){
+    /*
+    Esta función recibe como parámetros un array y retorna la 
+    segunda mitad del array. en caso de tener un número impar
+    de elementos, retorna del medio al final, con un número par, 
+    la segunda mitad exacta
+    */
+}
+
+function sumMultiples(numbers,limit){
+/*
+Esta función acepta una lista de números y retorna la suma de los 
+múltiplos de esos números que sean menores que el número límite.
+Por ejemplo: sumMultiples([3,5],10) retorna 23, ya que suma 3,5,6,9 que son los
+múltiplos de 3 y 5
+*/
+}

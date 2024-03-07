@@ -188,7 +188,7 @@ const ladder = {
       return this.step;
     }
     /*
-    Ahora, si necesitamos hacer varios llamados en secuencia podemos hacer algo como esto:
+    Ahora, si necesitamos hacer varias llamadas en secuencia podemos hacer algo como esto:
         ladder.up();
         ladder.up();
         ladder.down();
