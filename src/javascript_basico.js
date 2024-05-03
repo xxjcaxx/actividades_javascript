@@ -3,7 +3,7 @@ export {createArraySomeTypes, convert, getPrimes, min, applyFunction,
     getHistogram, getWarmHours, createUl, createClimateDataMatrix,
     climateObject, ClimateObject, sumSalaries, multiplyNumeric, ladder,
     randomInteger, checkSpam, truncate, getMaxSubSum, camelize, filterInPlace,
-    sortByAge, sortBy, shuffle, uniq
+    sortByAge, sortBy, shuffle, uniq, arraysUtils
 };
 
 // Tipos de datos:
@@ -242,4 +242,36 @@ function shuffle(array){
 
 function uniq(array){
     // Debe retornar un array sin elementos repetidos
+}
+
+
+const arraysUtils = {
+    /* Este objeto literal actua como un espacio de nombres para contener varias
+    funciones relacionadas con arrays. Es una manera de no saturar el
+    espacio de nombres global y de exportar e importar más cómodamente.
+    */
+    findAndRemove: function(array,values){
+        /*
+        Esta función acepta dos arrays, uno con datos (array) y el de values que 
+        son los elementos que se van a eliminar. Retorna un array como el de entrada
+        sin los elementos eliminados. 
+        No debe mutar el array original.
+        En caso de que no sea invocada correctamente (2 arrays), retornará una copia del primer argumento.
+       
+        Un requisito de esta función es usar Array.splice() para eliminar los elementos
+        */
+        },
+
+    toBinary: function(bytes){
+        /*
+        Esta función recibe un array de "bytes", (números enteros de 1 byte o caracteres ASCII)
+        y retorna un array unidimensional con todos los bits representados con 1 y 0s
+        Si alguno de los elementos del array no se puede representar en un byte, 
+        toda la función lanza un error "Error: Data cannot be converted to 8 bits."
+        El array original no debe ser modificado.
+
+        Un requisito de esta función es usar la función Array.flatMap()
+        */
+    }
+
 }
