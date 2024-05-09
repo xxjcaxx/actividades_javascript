@@ -474,7 +474,7 @@ describe("Javascript Básico", function () {
       const array = [1, -2, "a"];
       const result = arraysUtils.toBinary(array);
       expect(result).toEqual([
-        0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1,
       ]);
       expect(array).toEqual([1, -2, "a"]); // immutable
       let code = arraysUtils.toBinary.toString();
@@ -485,6 +485,87 @@ describe("Javascript Básico", function () {
       expect(() => {
         arraysUtils.toBinary([1, 1000]);
       }).toThrowError("Error: Data cannot be converted to 8 bits.");
+    });
+
+    it("and debe hacer la operación AND", function () {
+      const array = [1, -2, "a", [3, 4], { a: 5 }, 6, 7, 8, 9];
+      const mask = [1, "b", 0, false, undefined, NaN, null, -1];
+
+      const result = arraysUtils.and(array, mask);
+      expect(result).toEqual([
+        1,
+        -2,
+        false,
+        false,
+        false,
+        false,
+        false,
+        8,
+        false,
+      ]);
+      expect(() => {
+        arraysUtils.and([1, "ab"]);
+      }).toThrowError("Error: No mask provided.");
+      expect(() => {
+        arraysUtils.and([1],2);
+      }).toThrowError("Error: No arrays provided.");
+      expect(() => {
+        arraysUtils.and(1,2);
+      }).toThrowError("Error: No arrays provided.");
+    });
+    it("or debe hacer la operación OR", function () {
+      const arrayA = [1, -2, 0, [3, 4], { a: 5 }, 6, 7, 8, undefined];
+      const arrayB = [1, "b", 0, false, undefined, NaN, null, -1, -2, -3];
+
+      const result = arraysUtils.or(arrayA, arrayB);
+      expect(result).toEqual([
+        1,
+        -2,
+        false,
+        [3, 4],
+        { a: 5 },
+        6,
+        7,
+        8,
+        -2,
+        -3,
+      ]);
+      expect(() => {
+        arraysUtils.and([1, "ab"]);
+      }).toThrowError("Error: No mask provided.");
+      expect(() => {
+        arraysUtils.and([1],2);
+      }).toThrowError("Error: No arrays provided.");
+      expect(() => {
+        arraysUtils.and(1,2);
+      }).toThrowError("Error: No arrays provided.");
+    });
+    it("xor debe hacer la operación OR", function () {
+      const arrayA = [1, -2, 0, [3, 4], { a: 5 }, 6, 7, 8, undefined];
+      const arrayB = [1, "b", 0, false, undefined, NaN, null, -1, -2, -3];
+
+      const result = arraysUtils.xor(arrayA, arrayB);
+      expect(result).toEqual([
+        false,
+        false,
+        false,
+        [3, 4],
+        { a: 5 },
+        6,
+        7,
+        false,
+        -2,
+        -3,
+      ]);
+      expect(() => {
+        arraysUtils.and([1, "ab"]);
+      }).toThrowError("Error: No mask provided.");
+      expect(() => {
+        arraysUtils.and([1],2);
+      }).toThrowError("Error: No arrays provided.");
+      expect(() => {
+        arraysUtils.and(1,2);
+      }).toThrowError("Error: No arrays provided.");
     });
   });
 });
