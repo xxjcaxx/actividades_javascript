@@ -16,6 +16,6 @@
     "random": true
   },
   "browser": {
-    "name": "firefox"
+    "name": "chrome"
   }
 }

@@ -567,5 +567,24 @@ describe("Javascript Básico", function () {
         arraysUtils.and(1,2);
       }).toThrowError("Error: No arrays provided.");
     });
+    it("intersection debe retornar la intersección de dos arrays", function () {
+      let array8 = [8];
+      const arrayA = [1,2,3,[4,5],{a:6},2,7,array8,array8];
+      const arrayB = [0,3,3,[4,5],{b:6},2,2,array8,array8];
+
+      const result = arraysUtils.intersection(arrayA, arrayB);
+      expect(result).toEqual([2,3,2,[8],[8]]);
+      expect(() => {
+        arraysUtils.and([1, "ab"]);
+      }).toThrowError("Error: No arrays provided.");
+      expect(() => {
+        arraysUtils.and([1],2);
+      }).toThrowError("Error: No arrays provided.");
+      expect(() => {
+        arraysUtils.and(1,2);
+      }).toThrowError("Error: No arrays provided.");
+      let code = arraysUtils.intersection.toString();
+      expect(code.includes("Map")).toBe(true);
+    });
   });
 });

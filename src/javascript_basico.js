@@ -330,6 +330,22 @@ const arraysUtils = {
     En caso de que uno de los dos sea truthy y el otro falsy, se conservará el truthy
     No se modificará el array original
     */
+  },
+
+
+  // Una condición de esta función es usar un Map()
+  intersection: function(arrayA, arrayB){
+    /*
+    
+    Esta función retorna un array que es el resultado de hacer la intersección entre dos arrays de entrada. 
+    Retorna una array con los elementos coincidentes de los dos arrays. 
+    Si un elemento se repite en ambos arrays, debe estar repetido tantas veces como se repita en ambos. 
+    Puesto que un array puede tener objetos o arrays como elementos, la comparación será si son el mismo objeto por referencia
+
+    El orden de los elementos del array final se corresponde con el orden de los elementos del primer arrayA. 
+    No se modifican los arrays originales.
+
+    */
   }
 
 };
