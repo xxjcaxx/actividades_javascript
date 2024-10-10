@@ -1,0 +1,71 @@
+#sudoku table{
+    border-collapse: collapse;
+}
+
+
+td {
+    width: 50px;
+    height: 50px;
+    padding: 0px;
+    border: 1px solid #000;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 2em;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+td.wrong {
+  background-color: #f11;
+}
+
+td:nth-child(3), td:nth-child(6){
+    border-right: 3px solid #000;
+}
+
+tr:nth-child(3), tr:nth-child(6){
+    border-bottom: 3px solid #000;
+}
+
+td input {
+    width: 20px;
+    height: 20px;
+}
+
+td.input{
+    animation: blink 5s infinite;
+}
+@keyframes blink{
+    0% {
+      background: #fff;
+    }
+    20% {
+      background: #aaa;
+    }
+    40% {
+      background: #eee;
+    }
+    60% {
+      background: #aaa;
+    }
+}
+
+.teclado {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  background-color: #ddd;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  display: flex;
+  flex-wrap: wrap;
+}
+.teclado button {
+  display: inline-block;
+  padding: 0 4px 0 4px;
+  font-size: 26px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  margin: 0px;
+}
+
