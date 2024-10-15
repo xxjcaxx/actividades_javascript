@@ -1,3 +1,9 @@
+/**
+ * @vitest-environment jsdom
+ */
+
+import { describe, expect, test, it, vi, beforeEach, afterEach } from "vitest";
+
 import {
     changeNumber, quadsToRows, transpose, validateGroup, validateGroups,
     validateSudoku, generateValidationMatrix, renderSudoku,
@@ -22,7 +28,7 @@ describe('Sudoku', function () {
     let sudoku = structuredClone(sudokuSample);
 
     describe('Validaciones', function () {
-        it('validateGroup debe validar grupos', function () {
+        test('validateGroup debe validar grupos', function () {
             expect(validateGroup([1, 2, 3])).toBe(false);
             expect(validateGroup([1, 2, 3, 4, 5, 6, 7, 8, 9])).toBe(true);
             expect(validateGroup([1, 2, 3, 5, 6, 7, 8, 9, 4])).toBe(true);
@@ -30,13 +36,13 @@ describe('Sudoku', function () {
             expect(validateGroup([1, 2, 3, 5, 5, 7, 8, 9, 4])).toBe(false);
             expect(validateGroup([1, 2, 3, 5, 6, 7, 8, 9, 4, 0])).toBe(false);
         });
-        it('validateGroups debe validar grupos', function () {
+        test('validateGroups debe validar grupos', function () {
             expect(validateGroups(sudoku)).toEqual([true, true, true, true, true, true, false, true, false]);
             let sudoku2 = structuredClone(sudoku);
             sudoku2[0][0] = 9;
             expect(validateGroups(sudoku2)).toEqual([false, true, true, true, true, true, false, true, false]);
         });
-        it('transpose debe rotar un sudoku', function () {
+        test('transpose debe rotar un sudoku', function () {
             let transposedSudoku = transpose(sudoku);
             const expectedTranspose = [[2, 6, 8, 7, 3, 4, 9, 5, 1],
             [9, 4, 7, 1, 6, 5, 2, 8, 3],
@@ -50,7 +56,7 @@ describe('Sudoku', function () {
             expect(sudoku).toEqual(sudokuSample); // immutable
             expect(transposedSudoku).toEqual(expectedTranspose);
         });
-        it('quadsToRows debe convertir los cuadrados en filas', function () {
+        test('quadsToRows debe convertir los cuadrados en filas', function () {
             let quadstoRowsSudoku = quadsToRows(sudoku);
             const expectedQuads = [[2, 9, 5, 6, 4, 3, 8, 7, 1],
             [6, 7, 8, 9, 5, 1, 3, 4, 2],
@@ -66,7 +72,7 @@ describe('Sudoku', function () {
             expect(quadstoRowsSudoku).toEqual(expectedQuads);
         });
 
-        it('validateSudoku debe validar todos los elementos del sudoku', function () {
+        test('validateSudoku debe validar todos los elementos del sudoku', function () {
             let validatedSudoku = validateSudoku(sudoku);
             const expectedValidation = {
                 rows: [true, true, true, true, true, true, false, true, false],
@@ -76,7 +82,7 @@ describe('Sudoku', function () {
             expect(validatedSudoku).toEqual(expectedValidation);
         });
 
-        it('generateValidationMatrix debe retornar una matriz de validación', function () {
+        test('generateValidationMatrix debe retornar una matriz de validación', function () {
             let validatedSudoku = generateValidationMatrix(validateSudoku(sudoku));
 
             const expectedValidation = [
@@ -101,7 +107,7 @@ describe('Sudoku', function () {
     });
 
     describe('Acciones del juego', function () {
-        it('changeNumber debe retornar una copia con el número cambiado', function () {
+        test('changeNumber debe retornar una copia con el número cambiado', function () {
             let changedSudoku = changeNumber(sudoku)(0, 0)(0);
             expect(changedSudoku[0][0]).toBe(0);
             expect(sudoku[0][0]).not.toBe(0);
@@ -110,7 +116,7 @@ describe('Sudoku', function () {
 
     describe('DOM e interacción', function () {
 
-        it('renderSudoku debe retornar una tabla que representa al sudoku', function () {
+        test('renderSudoku debe retornar una tabla que representa al sudoku', function () {
             let sudokuTable = renderSudoku(sudoku);
             //console.log(sudokuTable, sudoku);
             expect(sudokuTable).toBeInstanceOf(Element);
@@ -120,7 +126,7 @@ describe('Sudoku', function () {
             expect(Array.from(sudokuTable.querySelector("td").classList)).toEqual(['static', 'ok']);
         });
 
-        it('addEventListenerToElement debe retornar el elemento con el listener añadido', function () {
+        test('addEventListenerToElement debe retornar el elemento con el listener añadido', function () {
             let element = document.createElement('span');
             let spy = null;
             let listener = (event) => spy = event.target.tagName;
@@ -131,7 +137,7 @@ describe('Sudoku', function () {
             expect(spy).toBe('SPAN');
         });
 
-        it('generateKeyboard debe retornar un teclado que emita un evento en cada tecla', function () {
+        test('generateKeyboard debe retornar un teclado que emita un evento en cada tecla', function () {
             let element = document.createElement('div');
             let teclado = generateKeyboard([2,3]);
             element.append(teclado);
@@ -144,7 +150,7 @@ describe('Sudoku', function () {
             expect(spy).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
         });
 
-        it('listenerInputClick es un manejador que añade un teclado', function () {
+        test('listenerInputClick es un manejador que añade un teclado', function () {
             let element = document.createElement('td');
             element.dataset.row = 3;
             element.dataset.col = 4;
@@ -159,7 +165,7 @@ describe('Sudoku', function () {
             expect(spy).toEqual([{key: 1, coordinates: ["3","4"]}]);
         });
 
-        it('listenTeclado es un manejador para el evento personalizado "teclado"', function () {
+        test('listenTeclado es un manejador para el evento personalizado "teclado"', function () {
             let element = document.createElement('td');
             let fakeTecladoDiv = document.createElement('div');
             let targetContainer = document.createElement('div');
@@ -172,7 +178,7 @@ describe('Sudoku', function () {
             expect(targetContainer.querySelector('td[data-row="0"][data-col="0"]').innerText).toBe("0")
         });
 
-        it('appendSudoku crea un sudoku, añade sus eventos y lo pone en el container', function () {
+        test('appendSudoku crea un sudoku, añade sus eventos y lo pone en el container', function () {
             let targetContainer = document.createElement('div');
             appendSudoku(sudoku,targetContainer);
             //console.log(targetContainer);

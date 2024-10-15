@@ -1,18 +1,51 @@
+/**
+ * @vitest-environment jsdom
+ */
+
+import { describe, expect, test, it, vi, beforeEach, beforeAll, afterAll, afterEach } from "vitest";
+import { http as rest } from 'msw';
+import { setupServer } from 'msw/node';
+
 import * as http from '../src/comunicacion_servidor.js'
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+import  liga from '../src/data/liga.json';
+import logo from '../src/data/JavaScript-logo.png';
+
+const createMockBlob = (logo) => {
+    return new Blob([logo], { type: 'image/png' });  // Creas un blob de tipo PNG
+  };
+// Configurar el servidor MSW para interceptar y mockear las solicitudes HTTP
+const server = setupServer(
+    rest.get('liga.json', (req, res, ctx) => {
+        return res(ctx.json(liga)); // Mock de respuesta exitosa
+    }),
+    rest.get('JavaScript-logo.png', (req, res, ctx) => {
+        const blob = createMockBlob(logo); // Crear el blob desde la imagen importada
+        return res(
+          ctx.set('Content-Type', 'image/png'), // Especificar el tipo de contenido
+          ctx.body(blob)  // Devolver el blob como respuesta
+        );
+      }),
+    rest.get('http://dominioquenoexiste.noexiste/liga.json', (req, res, ctx) => {
+        return res.networkError('Error de red'); // Mock de error de red
+    }),
+    rest.get('noexiste.json', (req, res, ctx) => {
+        return res(ctx.status(500), ctx.json({ error: 'Error en el servidor' })); // Mock de error en servidor
+    }),
+    rest.get('jsonMalo.json', (req, res, ctx) => {
+        return res(ctx.body('This is not valid JSON')); // Mock de JSON malo
+    })
+);
 
 describe('Comunicación con el servidor', function () {
+    // Activar el servidor antes de las pruebas
+    beforeAll(() => server.listen());
+    // Apagar el servidor después de las pruebas
+    afterAll(() => server.close());
+
     describe('fetch', function () {
-        /*
-        Los tests de fetch, al implicar la necesitada de un servidor, son un poco más complicados
-        En los primeros tests de esta suite veremos maneras de testar sin necesidad de un servidor.
-        
-        El primer test no lo necesita, ya que la propia Jasmine-browser-runner implementa un servidor
-        al que podemos pedir por GET.
-        */
-        it('getData debe obtener los datos o un error', async function () {
-            let promise = http.getData('__spec__/src/data/liga.json')
+        test('getData debe obtener los datos o un error', async function () {
+            let promise = http.getData('liga.json')
             expect(promise).toBeInstanceOf(Promise);
             try {
                 let data = await promise;
@@ -20,37 +53,34 @@ describe('Comunicación con el servidor', function () {
             } catch (error) {
                 console.log(error);
             }
-            let promiseErrorRed = http.getData('http://dominioquenoexiste.noexiste/__spec__/src/data/liga.json')
+            let promiseErrorRed = http.getData('http://dominioquenoexiste.noexiste/liga.json')
             expect(promiseErrorRed).toBeInstanceOf(Promise);
             try {
                 let data = await promiseErrorRed;
-                // expect(data).toBeInstanceOf(Array);
             } catch (error) {
                 expect(error).toBe("Error de red");
             }
-            let promiseErrorServidor = http.getData('__spec__/src/data/noexiste.json')
+            let promiseErrorServidor = http.getData('noexiste.json')
             expect(promiseErrorServidor).toBeInstanceOf(Promise);
             try {
                 let data = await promiseErrorServidor;
-                // expect(data).toBeInstanceOf(Array);
             } catch (error) {
                 expect(error).toBe("Error en el servidor");
             }
 
-            let promiseErrorJSON = http.getData('__spec__/src/data/jsonMalo.json')
+            let promiseErrorJSON = http.getData('jsonMalo.json')
             expect(promiseErrorJSON).toBeInstanceOf(Promise);
             try {
                 let data = await promiseErrorJSON;
-                // expect(data).toBeInstanceOf(Array);
             } catch (error) {
                 expect(error).toBe("El JSON no es correcto");
             }
 
         });
 
-        it('getDataCache debe obtener los datos en cache o del servidor', async function () {
-            const spyFetch = spyOn(window, 'fetch').and.callThrough();;
-            let getLiga = http.getDataCache('__spec__/src/data/liga.json');
+        test('getDataCache debe obtener los datos en cache o del servidor', async function () {
+            const spyFetch = vi.spyOn(window, 'fetch');
+            let getLiga = http.getDataCache('liga.json');
             let promise = getLiga();
             expect(promise).toBeInstanceOf(Promise);
             let data = await promise;
@@ -64,9 +94,9 @@ describe('Comunicación con el servidor', function () {
 
         });
 
-        it('getImg debe obtener una imagen y retornar la url a un blob', async function () {
-            const spyFetch = spyOn(window, 'fetch').and.callThrough();
-            let getLogo = http.getImg('__spec__/src/data/JavaScript-logo.png');
+        test('getImg debe obtener una imagen y retornar la url a un blob', async function () {
+            const spyFetch = vi.spyOn(window, 'fetch');
+            let getLogo = http.getImg('JavaScript-logo.png');
             expect(getLogo).toBeInstanceOf(Promise);
             let data = await getLogo;
             expect(data).toEqual(jasmine.any(String));
@@ -99,11 +129,11 @@ describe('Comunicación con el servidor', function () {
         En este caso, los datos se envían por POST y alguien debe responder. Cuando nos encontramos en 
         esta situación, se denominan tests de integración. 
         Hay varias maneras de enfocarlos. 
-        Podemos interceptar el fetch y hacer que retorne datos falsos. https://testing-angular.com/faking-dependencies/#faking-dependencies 
+        Podemos interceptar el fetch y hacer que retorne datos falsos.
         También podemos implementar un servidor web mínimo con nodejs. 
         Si trabajamos con Karma, este nos permite ejecutar el servidor al hacer las pruebas. 
         */
-        it('sendForm debe enviar por post datos a un servidor', async function () {
+        test('sendForm debe enviar por post datos a un servidor', async function () {
 
             let formExample = document.createElement('form');
             formExample.innerHTML = `<form>
@@ -124,7 +154,7 @@ describe('Comunicación con el servidor', function () {
              });*/
             //const spyFetch = spyOn(window, 'fetch').and.returnValue(Promise.resolve(okResponse));
 
-            const spyFetch = spyOn(window, 'fetch').and.callFake((url, options) => {
+            const spyFetch = vi.spyOn(window, 'fetch').mockImplementation((url, options) => {
                 console.log(options.body);
                 return Promise.resolve(
                     new Response(JSON.stringify({ name: options.body.get('login'), password: options.body.get('password') }), {
@@ -137,7 +167,7 @@ describe('Comunicación con el servidor', function () {
 
             expect(postForm).toBeInstanceOf(Promise);
             let data = await postForm;
-            expect(data).toEqual(jasmine.any(String));
+            expect(typeof data).toBe('string')
             expect(data).toBe(`{"name":"usuario","password":"1234"}`);
             expect(spyFetch).toHaveBeenCalled();
             // En este caso, comprobamos que se han enviado bien los datos. 
@@ -145,10 +175,11 @@ describe('Comunicación con el servidor', function () {
 
             const functionCode = http.sendForm.toString();
             expect(functionCode).toContain('FormData');
+            spyFetch.mockRestore();
         });
 
 
-        it('sendFormJSON debe enviar por post datos a un servidor', async function () {
+        test('sendFormJSON debe enviar por post datos a un servidor', async function () {
 
             let formExample = document.createElement('form');
             formExample.innerHTML = `<form>
@@ -167,7 +198,7 @@ describe('Comunicación con el servidor', function () {
                 body: '{"login":"usuario","password":"1234"}'
             }
 
-            const spyFetch = spyOn(window, 'fetch').and.callFake((url, options) => {
+            const spyFetch = spyOn(window, 'fetch').mockImplementation((url, options) => {
                 let optionsBody = JSON.parse(options.body);
                 return Promise.resolve(
                     new Response(JSON.stringify({ name: optionsBody.login, password: optionsBody.password }), {
@@ -180,23 +211,24 @@ describe('Comunicación con el servidor', function () {
 
             expect(postForm).toBeInstanceOf(Promise);
             let data = await postForm;
-            expect(data).toEqual(jasmine.any(Object));
-            expect(data).toEqual({"name":"usuario","password":"1234"});
+            expect(data).toBeInstanceOf(Object);
+            expect(data).toEqual({ "name": "usuario", "password": "1234" });
             expect(spyFetch).toHaveBeenCalled();
             // En este caso, comprobamos que se han enviado bien los datos. 
             expect(spyFetch).toHaveBeenCalledWith('http://localhost/fakeServer', opciones);
 
             const functionCode = http.sendForm.toString();
             expect(functionCode).toContain('FormData');
+            spyFetch.mockRestore();
         });
     });
 
     describe('Varios', function () {
 
-        it('generateURL retorna una URL segura',()=>{
-            expect(http.generateURL('foo/cities',[["country", "Spain"],["province", "València"]]))
+        test('generateURL retorna una URL segura', () => {
+            expect(http.generateURL('foo/cities', [["country", "Spain"], ["province", "València"]]))
                 .toBe('foo/cities?country=Spain&province=Val%C3%A8ncia');
-            expect(http.generateURL('foo',[["country", "Saint Vincent & the Grenadines"],["province", "Parish of Saint Patrick"]]))
+            expect(http.generateURL('foo', [["country", "Saint Vincent & the Grenadines"], ["province", "Parish of Saint Patrick"]]))
                 .toBe('foo?country=Saint+Vincent+%26+the+Grenadines&province=Parish+of+Saint+Patrick');
         })
     });

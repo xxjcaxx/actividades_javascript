@@ -1,4 +1,8 @@
-import {describe, expect, test, it } from "vitest";
+/**
+ * @vitest-environment jsdom
+ */
+
+import {describe, expect, test, it, vi, beforeEach } from "vitest";
 
 import {
     student, arbitraryArgs, getMax, getDistance,
@@ -365,15 +369,11 @@ describe('Programación Funcional', function () {
     });
 
     describe('Memoize', function () {
-        let callback;
-        beforeEach(() => {
-          // Crear spy para callback 
-          callback = jasmine.createSpy('callback');
-        });
+    
   
         test('memoize debe retornar una función "memoizada"', function () {
             window.sum = (a,b) => a+b;
-            let callback = spyOn(window,'sum').and.callThrough();
+            let callback = vi.spyOn(window,'sum');
             const memoizedSum = memoize(window.sum);
             expect(memoizedSum(5,4)).toBe(9);
             expect(callback).toHaveBeenCalled();
@@ -384,16 +384,10 @@ describe('Programación Funcional', function () {
     });
 
     describe('Ensure One Call', function () {
-        let callback;
-        beforeEach(() => {
-          // Crear spy para callback 
-          callback = jasmine.createSpy('callback');
-        });
-
-    
+       
         test('ensureOneCall debe llamar sólo una vez a la función', function () {
             window.sum = (a,b) => a+b;
-            let callback = spyOn(window,'sum').and.callThrough();
+            let callback = vi.spyOn(window,'sum');
             const onceSum = ensureOneCall(window.sum);
             expect(onceSum(5,4)).toBe(9);
             expect(callback).toHaveBeenCalled();

@@ -1,3 +1,9 @@
+/**
+ * @vitest-environment jsdom
+ */
+
+import {describe, expect, test, it, vi, beforeEach } from "vitest";
+
 import * as alg from "../src/algoritmos.js"
 
 const initial_state = [[0,0,0],[0,0,0],[0,0,0]];
@@ -7,21 +13,21 @@ const win_state = [[-1,1,-1],[1,-1,1],[-1,-1,1]];
 
 describe('3 en raya', function() {
     describe('Funciones del juego', function() {
-      it('TicTacToeGetInitialState Debe retornar un array 3x3 de 0s', function() {
+      test('TicTacToeGetInitialState Debe retornar un array 3x3 de 0s', function() {
         expect(alg.TicTacToeGetInitialState()).toEqual(initial_state)
         });
-      it('TicTacToeGetNextState Debe retornar una copia con la jugada', function() {
+      test('TicTacToeGetNextState Debe retornar una copia con la jugada', function() {
         expect(alg.TicTacToeGetNextState(initial_state,2,1)).toEqual([[0,0,1],[0,0,0],[0,0,0]]);
         expect(alg.TicTacToeGetNextState(initial_state,3,-1)).toEqual([[0,0,0],[-1,0,0],[0,0,0]]);
         expect(alg.TicTacToeGetNextState(initial_state,2,1)).not.toBe(initial_state);
         });
-      it('TicTacToeGetValidMoves Debe retornar la lista de posibles accions', function() {
+      test('TicTacToeGetValidMoves Debe retornar la lista de posibles accions', function() {
           expect(alg.TicTacToeGetValidMoves(initial_state)).toEqual([1,1,1,1,1,1,1,1,1]);
           expect(alg.TicTacToeGetValidMoves(example_state)).toEqual([1,0,1,1,0,1,1,1,1]);
           expect(alg.TicTacToeGetValidMoves(full_state)).toEqual([0,0,0,0,0,0,0,0,0]);
         });
 
-        it('TicTacToeCheckWin Debe retornar si ha ganado o no el jugador', function() {
+        test('TicTacToeCheckWin Debe retornar si ha ganado o no el jugador', function() {
           expect(alg.TicTacToeCheckWin(example_state,1)).toBe(false);
           expect(alg.TicTacToeCheckWin(full_state,1)).toBe(false);
           expect(alg.TicTacToeCheckWin(full_state,2)).toBe(false);
@@ -29,18 +35,18 @@ describe('3 en raya', function() {
           expect(alg.TicTacToeCheckWin(win_state,1)).toBe(false);
         });
 
-        it('TicTacToeGetWinAndTerminated Debe retornar si ha ganado o no el jugador y si la partida a acabado', function() {
+        test('TicTacToeGetWinAndTerminated Debe retornar si ha ganado o no el jugador y si la partida a acabado', function() {
           expect(alg.TicTacToeGetWinAndTerminated(example_state,1)).toEqual({win:0,terminated: false});
           expect(alg.TicTacToeGetWinAndTerminated(full_state,1)).toEqual({win:0,terminated: true});
           expect(alg.TicTacToeGetWinAndTerminated(win_state,4)).toEqual({win:1,terminated: true});
         });
-        it('TicTacToeChangePerspective Debe retornar el juego invertido', function() {
+        test('TicTacToeChangePerspective Debe retornar el juego invertido', function() {
           //console.log(alg.TicTacToeChangePerspective(example_state));
           expect(alg.TicTacToeChangePerspective(example_state)).toEqual([[0,-1,0],[0,1,0],[0,0,0]]);
            });
     });
     describe('Juego completo', function() {
-      it('Debe completar un juego completo', function() {
+      test('Debe completar un juego completo', function() {
       const move_list = [4,0,1,7,2,8,6]
       let state = alg.TicTacToeGetInitialState();
       let player = 1;
@@ -100,7 +106,7 @@ describe('Montecarlo', function() {
 
     describe('Funciones auxiliares', function() {
 
-      it('MCGetRandomMove Debe retornar un movimiento válido aleatorio', function() {
+      test('MCGetRandomMove Debe retornar un movimiento válido aleatorio', function() {
         expect(alg.MCGetRandomMove([0,0,1,0])).toBe(2);
         for(let i=0; i<10; i++){
           expect(alg.MCGetRandomMove(exampleNode.expandableMoves)).not.toBe(1);
@@ -108,7 +114,7 @@ describe('Montecarlo', function() {
         }
 
       });
-      it('MCExpandNode Debe retornar el nodo expandido', function() {
+      test('MCExpandNode Debe retornar el nodo expandido', function() {
         /*
         Ejemplo de cómo puede quedar el nodo después de expandir:
        {
@@ -147,18 +153,18 @@ describe('Montecarlo', function() {
    
   
 
-    it('MCIsFullExpandedNode Debe retornar si está totalmente expandido', function() {
+    test('MCIsFullExpandedNode Debe retornar si está totalmente expandido', function() {
       expect(alg.MCIsFullExpandedNode(exampleNode)).toBe(false);
       expect(alg.MCIsFullExpandedNode(exampleExpandedNode)).toBe(true);
       expect(alg.MCIsFullExpandedNode(exampleExpandedNode.children[0])).toBe(false);
       
     });
 
-    it('MCGetUcb Debe retornar el UCB', function() {
+    test('MCGetUcb Debe retornar el UCB', function() {
       expect(alg.MCGetUcb(exampleExpandedNode.children[0],exampleExpandedNode,1.41)).toBeCloseTo(1.144, 1);
     });
 
-    it('MCTSelectBestNode Debe retornar el mejor nodo', function() {
+    test('MCTSelectBestNode Debe retornar el mejor nodo', function() {
       let simplifiedChild = {value: 3, visits: 3, expandableMoves: [0,0,0,0,0,0,0,1,0]};
       let simplifiedNode = {
         value: 3,
@@ -175,11 +181,11 @@ describe('Montecarlo', function() {
     });
 
 
-    it('MCSimulate Debe retornar un ganador de la simulación', function() {
+    test('MCSimulate Debe retornar un ganador de la simulación', function() {
       expect([-1,0,1]).toContain(alg.MCSimulate(game)(exampleNode));
     });
 
-    it('MCBackPropagate Debe propagar el resultado de la simulación', function() {
+    test('MCBackPropagate Debe propagar el resultado de la simulación', function() {
       let simplifiedChildChild = {value: 0, visits: 0};
       let simplifiedChild = {value: 1, visits: 1, children: [{value: 0, visits: 1},simplifiedChildChild]};
       let simplifiedNode = {
@@ -199,7 +205,7 @@ describe('Montecarlo', function() {
       expect([simplifiedChildChild.value, simplifiedChildChild.visits]).toEqual([1,1]);
     });
 
-    it('MTCSearch Debe retornar la mejor jugada', function() {
+    test('MTCSearch Debe retornar la mejor jugada', function() {
       let wins = alg.MCTSearch(game,exampleNode.state,1000);
       console.log(wins);
       expect(wins).toBeInstanceOf(Array)
@@ -211,7 +217,7 @@ describe('Montecarlo', function() {
   });
 
   describe('Juego completo MCTS', function() {
-    it('Debe ganar casi siempre las 10 partidas contra un jugador Random', function() {
+    test('Debe ganar casi siempre las 10 partidas contra un jugador Random', function() {
     let randomPlayer = (game,state,n_searches) => {
       return game.getValidMoves(state).map(m => m*Math.random())
     }
@@ -248,7 +254,7 @@ describe('Montecarlo', function() {
 
 describe('Retos', () => {
   describe('Sencillos', () => {
-    it('MiddleOfArray debería retornar de la mitad para adelante de un array', () => {
+    test('MiddleOfArray debería retornar de la mitad para adelante de un array', () => {
       const par = [1,2,3,4,5,6];
       const impar = [1,2,3,4,5];
       expect(alg.middleOfArray(par)).toBeInstanceOf(Array);
@@ -256,7 +262,7 @@ describe('Retos', () => {
       expect(alg.middleOfArray(impar)).toEqual([3,4,5]);
       expect(par).toEqual([1,2,3,4,5,6]); // no mutar
     });
-    it('sumMultiples debería retornar la suma de los múltiplos', () => {
+    test('sumMultiples debería retornar la suma de los múltiplos', () => {
       const numbers = [3,5];
      expect(alg.sumMultiples(numbers,10)).toBe(23);
      expect(alg.sumMultiples(numbers,16)).toBe(60);

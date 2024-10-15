@@ -1,8 +1,15 @@
+/**
+ * @vitest-environment jsdom
+ */
+
+import { describe, expect, test, it, vi, beforeEach, afterEach } from "vitest";
+
+
 import * as chess from "../src/proyecto_ajedrez.js";
 
 describe("Ajedrez", function () {
   describe("transformaciones", function () {
-    it("fenToBoard debería crear un tablero correcto", function () {
+    test("fenToBoard debería crear un tablero correcto", function () {
       let fen = "4rbk1/1pp1qPpn/p1n4p/3r4/P7/5N1P/1P2QPP1/R1B1R1K1 b - - 0 19";
       let expectedBoard = [
         [0, 0, 0, 0, -4, -3, -5, 0],
@@ -25,7 +32,7 @@ describe("Ajedrez", function () {
       result = chess.fenToBoard(fen);
       expect(result).toEqual(expectedBoard);
     });
-    it("boardToLetters debería retornar un tablero de letras", function () {
+    test("boardToLetters debería retornar un tablero de letras", function () {
       let initBoard = [
         [0, 0, 0, 0, -4, -3, -5, 0],
         [0, -1, -1, 0, -6, 1, -1, -2],
@@ -52,7 +59,7 @@ describe("Ajedrez", function () {
       expect(typeof result[0][0]).toBe("string");
       expect(result).toEqual(expectedBoard);
     });
-    it("boardToString debería retornar un tablero de letras", function () {
+    test("boardToString debería retornar un tablero de letras", function () {
       let initBoard = [
         [".", ".", ".", ".", "r", "b", "k", "."],
         [".", "p", "p", ".", "q", "P", "p", "n"],
@@ -79,7 +86,7 @@ describe("Ajedrez", function () {
     a  b  c  d  e  f  g  h`);
     });
 
-    it("new boardToFen debería retornar un objeto Chess", function () {
+    test("new boardToFen debería retornar un objeto Chess", function () {
       let board = [
         [0, 0, 0, 0, -4, -3, -5, 0],
         [0, -1, -1, 0, -6, 1, -1, -2],
@@ -96,7 +103,7 @@ describe("Ajedrez", function () {
       expect(result).toBe(expectedFen);
     });
 
-    it("new Chess() debería retornar un objeto Chess", function () {
+    test("new Chess() debería retornar un objeto Chess", function () {
       let fen = "4rbk1/1pp1qPpn/p1n4p/3r4/P7/5N1P/1P2QPP1/R1B1R1K1 b - - 0 19";
       let expectedBoard = [
         [0, 0, 0, 0, -4, -3, -5, 0],
@@ -117,7 +124,7 @@ describe("Ajedrez", function () {
       expect(new_chess.currentBoard).toEqual(expectedBoard);
       expect(new_chess.turn).toBe("w");
     });
-    it("chess.move debería ejecutar un movimiento en uci o san", function () {
+    test("chess.move debería ejecutar un movimiento en uci o san", function () {
       let fen = "4rbk1/1pp1qPpn/p1n4p/3r4/P7/5N1P/1P2QPP1/R1B1R1K1 b - - 0 19";
       let expectedBoard = [
         [0, 0, 0, 0, -4, -3, -5, 0],
@@ -139,7 +146,7 @@ describe("Ajedrez", function () {
       new_chess.move().san("Ra3");
       expect(new_chess.currentBoard).toEqual(expectedBoard);
     });
-    it("chess.toString debería retornar el string del tablero", function () {
+    test("chess.toString debería retornar el string del tablero", function () {
       let fen = "4rbk1/1pp1qPpn/p1n4p/3r4/P7/5N1P/1P2QPP1/R1B1R1K1 b - - 0 19";
       let new_chess = new chess.Chess(fen);
 
@@ -155,7 +162,7 @@ describe("Ajedrez", function () {
   +------------------------+
     a  b  c  d  e  f  g  h`);
     });
-    it("chess.history debería retornar el string del tablero", function () {
+    test("chess.history debería retornar el string del tablero", function () {
       let fen = "4rbk1/1pp1qPpn/p1n4p/3r4/P7/5N1P/1P2QPP1/R1B1R1K1 b - - 0 19";
       let new_chess = new chess.Chess(fen);
       new_chess.move().uci("d5c5");
@@ -168,7 +175,7 @@ describe("Ajedrez", function () {
       expect(new_chess.historyMoves).toEqual(["d5c5", "a1a3"]);
     });
 
-    it("boardToAlphaZero debería retornar la version alphazero del tablero", function () {
+    test("boardToAlphaZero debería retornar la version alphazero del tablero", function () {
       let board = [
         [0, 0, 0, 0, -4, -3, -5, 0],
         [0, -1, -1, 0, -6, 1, -1, -2],
