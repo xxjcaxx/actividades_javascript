@@ -22,7 +22,8 @@
 
         "webtest:chess": "vitest spec/chess_spec.test.js --ui",
 
-        "webtest:sudoku": "vitest spec/sudoku_spec.test.js --ui"
+        "webtest:sudoku": "vitest spec/sudoku_spec.test.js --ui",
+        "webtest:webcomponents": "vitest spec/webcomponents_spec.test.js --ui"
 
     },
 
