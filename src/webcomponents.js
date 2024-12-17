@@ -25,12 +25,8 @@ class BasicCustomElement extends HTMLElement {
  Haz un custom element que agregue a partir de su etiqueta un <span> 
  con el texto "Basic Custom"
  */
- constructor() {
-    super();
-      console.log("Constructor")
-  }
  connectedCallback() {
-    console.log("Custom element added to page.");
+    this.innerHTML = `<span>Basic Custom</span>`
   }
 
 }
@@ -40,6 +36,9 @@ class BasicTextCustomElement extends HTMLElement {
     Haz un custom element que agregue a partir de su etiqueta un <span> 
     con el texto que tenga en data-texto
     */
+    connectedCallback() {
+        this.innerHTML = `<span>${this.dataset.texto}</span>`
+      }
 }
 
 class BasicConstructorCustomElement extends HTMLElement {
@@ -52,6 +51,13 @@ class BasicConstructorCustomElement extends HTMLElement {
         const myComponent = new BasicConstructorCustomElement(text);
         document.body.appendChild(myComponent);
     */
+   constructor(text){
+    super();
+    this.text = text;
+   }
+   connectedCallback() {
+    this.innerHTML = `<span>${this.text}</span>`
+  }
 }
 
 class BasicAttrCustomElement extends HTMLElement {
@@ -62,6 +68,9 @@ class BasicAttrCustomElement extends HTMLElement {
     Además, ha de atender al cambio del atributo para modificar su
     contenido
     */
+    connectedCallback() {
+        this.innerHTML = `<span>${this.getAttribute('custom_text')}</span>`
+      }
 }
 
 
