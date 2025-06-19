@@ -1,25 +1,42 @@
 {
-  "name": "actividades_javascript",
-  "version": "1.0.0",
-  "description": "Actividades de Javascript en Javascript con tests",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/xxjcaxx/actividades_javascript.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/xxjcaxx/actividades_javascript/issues"
-  },
-  "homepage": "https://github.com/xxjcaxx/actividades_javascript#readme",
-  "dependencies": {
-    "jasmine-browser-runner": "^2.3.0",
-    "jasmine-core": "^5.1.1"
-  },
-  "type": "module"
+
+    "scripts": {
+
+        "test": "vitest",
+
+        "webtest": "vitest --ui",
+
+        "coverage": "vitest run --coverage",
+
+        "webtest:basic": "vitest spec/basic_spec.test.js --ui",
+
+        "webtest:functional": "vitest spec/functional_spec.test.js --ui",
+
+        "webtest:algorithms": "vitest spec/algorithms_spec.test.js --ui",
+
+        "webtest:iterables": "vitest spec/iterables_spec.test.js --ui",
+
+        "webtest:promises": "vitest spec/promise_spec.test.js --ui",
+
+        "webtest:http": "vitest spec/http_spec.test.js --ui",
+
+        "webtest:chess": "vitest spec/chess_spec.test.js --ui",
+
+        "webtest:sudoku": "vitest spec/sudoku_spec.test.js --ui"
+
+    },
+
+    "devDependencies": {
+
+        "@vitest/ui": "^2.1.2",
+
+        "jsdom": "^25.0.1",
+
+        "msw": "^2.4.11",
+
+        "vitest": "^2.1.2"
+
+    }
+
 }
+

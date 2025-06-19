@@ -3,7 +3,7 @@
 ## Instrucciones:
 Clona este repositorio o descarga la carpeta.
 
-Para que funcione, hay que instalar las suite de tests **Jasmine**. Como está especificado en **package.json**, sólo tienes que ejecutar:
+Para que funcione, hay que instalar las suite de tests **Vitest**. Como está especificado en **package.json**, sólo tienes que ejecutar:
 > npm install
 
 Asegúrate de tener instalado nodejs y npm en una de las últimas versiones. Yo lo he probado todo en Firefox 119, no garantizo que funcione en navegadores más antiguos.
@@ -11,7 +11,7 @@ Asegúrate de tener instalado nodejs y npm en una de las últimas versiones. Yo 
 ## Recomendaciones
 Una vez preparado, dentro de src hay algunos ficheros javascript con funciones inacabadas. La tarea del alumno es acabar esas funciones y ver si pasan el test.
 
-Cada función tiene al menos un test (it()) asociado. No siempre es necesario acabar todas las funciones para probar los tests. Una vez entras a la url que te proporciona Jasmine, puedes seleccionar el test de la función que estás haciendo y sólo testear esa función.  
+Cada función tiene al menos un test asociado. No siempre es necesario acabar todas las funciones para probar los tests.
 
 Algunos enunciados se complementan con la lectura del test. Si no entiendes qué se pide, puedes ir al test en la carpeta spec. Estará en un archivo con un nombre similar al de las funciones. Leer los test te ayudará a entender mejor el enunciado y a plantear nuevos tests a esas o otras funciones.
 
@@ -24,40 +24,32 @@ Los tests están organizados por temáticas según mi criterio. Podemos empezar 
 
 ## Ejecutar los tests
 
-Es mejor no ejecutar todos los tests juntos, pero aquí está la manera:
+Vemamos qué hay en package.json:
 
-Comando para ejecutar todos los tests:
-> npx jasmine-browser-runner serve
+```json
+        "test": "vitest",
+        "webtest": "vitest --ui",
+        "coverage": "vitest run --coverage",
+        "webtest:basic": "vitest spec/basic_spec.test.js --ui",
+        "webtest:functional": "vitest spec/functional_spec.test.js --ui",
+        "webtest:algorithms": "vitest spec/algorithms_spec.test.js --ui",
+        "webtest:iterables": "vitest spec/iterables_spec.test.js --ui",
+        "webtest:promises": "vitest spec/promise_spec.test.js --ui",
+        "webtest:http": "vitest spec/http_spec.test.js --ui",
+        "webtest:chess": "vitest spec/chess_spec.test.js --ui",
+        "webtest:sudoku": "vitest spec/sudoku_spec.test.js --ui"
+```
 
-Para ejecutar los test separados por temática: 
+Por tanto, si queremos ejecutar los tests básicos, podemos poner esto en la terminal:
+> npm run webtest:basic
 
-Comando para ejecutar los tests de los ejercicios básicos:
-> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-basic.json
+Y así con todos los demás tests.
 
-Comando para ejecutar los tests de los ejercicios sobre Iterables:
-> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-iterables.json
-
-Comando para ejecutar los test de promesas: 
-> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-promise.json
-
-Comando para ejecutar los tests de comunicación con el servidor:
-> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-http.json
-
-Comando para ejecutar los tests de programación funcional:
-> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-functional-programing.json
-
-Se plantea un proyecto completo en el que, si se hacen todas las funciones, se puede crear una biblioteca que permite crear un Sudoku completo, jugable y que valida.
-
-Los tests para el proyecto Sudoku:
-> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-sudoku.json
-
-Si queremos probar que el sudoku funciona, hay una carpeta "web_sudoku" con un html y js que necesitan la biblioteca para funcionar y ser arrancados desde un servidor de pruebas como la extensión "Live Server" de VS Code.
-
-También se plantea un conjunto de funciones temáticas relacionadas con el ajedrez:
-> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-chess.json
-
-Si se quiere profundizar en algortimos, más que en las particularidades del lenguaje, se puede intentar hacer los ejercicios planteados en este test:
-> npx jasmine-browser-runner serve --config=spec/support/jasmine-browser-algorithms.json
-
+No sería muy recomendable lanzar todos los tests con `npm run test`, ya que pueden ser demasiados. 
 
 Si resulta muy difícil o los enunciados son confusos, en la carpeta "soluciones" se puede ver cómo he implementado yo el sudoku o los algoritmos. 
+
+
+# Con Jasmine (más antiguos)
+
+Este repositorio se creó originalmente con tests de Jasmine. Estoy en proceso de cambiar todo a vitest, pero se pueden probar también con Jasmine. Para ello hay que entrar en el directorio de `jasmine_back` y seguir las instrucciones. 
