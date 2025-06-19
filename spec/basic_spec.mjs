@@ -101,7 +101,7 @@ describe("Javascript Básico", function () {
       expect(applyFunction(1, (n) => n * 3)).toBe(3);
       expect(applyFunction(1, (n) => {})).toBe(undefined);
     });
-    it("Debe retornar un función que acepte un número y lo multiplique al número que acepta esta función", function () {
+    it("(multiplicar) Debe retornar un función que acepte un número y lo multiplique al número que acepta esta función", function () {
       expect(multiplicar(1) instanceof Function).toBe(true);
       expect(multiplicar(2)(3)).toBe(6);
     });

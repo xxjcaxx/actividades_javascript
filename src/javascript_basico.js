@@ -51,6 +51,36 @@ function convert(data, type) {
 // Estructuras de control y operadores
 
 function getPrimes(start, end) {
+  /* let primos = [];
+   for(let i = start; i < end ; i++){
+     let esPrimo = true;
+     for(let j = 2; j < i; j++){
+       if (i%j === 0) esPrimo = false;
+     }
+     if(esPrimo) primos.push(i);
+   }
+   return primos;
+ */
+  /*function getIntervalo(start, end) {
+    let numerosIntervalo = [];
+    for (let i = start; i < end; i++) {
+      numerosIntervalo.push(i);
+    }
+    return numerosIntervalo;
+  }*/
+
+  let getIntervalo = (a,b) => Array(Math.max(b-a,0)).fill(0).map((_,i)=> a+i);
+
+
+  function esPrimo(n) {
+    let isPrimo = true;
+    for (let j = 2; j < n; j++) {
+      if (n % j === 0) isPrimo = false;
+    }
+    return isPrimo;
+  }
+
+  return getIntervalo(start,end).filter(esPrimo);
   // Se denomina primo a un número entero mayor que 1 que no puede dividirse sin obtener un residuo por ningún número, excepto 1 y el propio número.
   // En términos simples, un número primo (n > 1) es aquel que no tiene divisores exactos aparte de 1 y n.
   // Como ejemplo, el número 5 es primo, ya que no es divisible exactamente por 2, 3 y 4.
@@ -59,7 +89,8 @@ function getPrimes(start, end) {
 
 function min(array) {
   // Debe retornar el número mínimo de un array
-  // Debe descartar los valores no numéricos.
+  // Debe descartar los valores no numéricos
+  return Math.min(...array.filter(e => typeof e === "number"));
 }
 
 // Funciones
@@ -69,6 +100,8 @@ function applyFunction(data, callback) {
 }
 
 function multiplicar(numero) {
+  return numero2 => numero*numero2;
+  
   // Debe retornar un función que acepte un número y lo multiplique al número que acepta esta función
 }
 
@@ -271,7 +304,7 @@ const arraysUtils = {
     espacio de nombres global y de exportar e importar más cómodamente.
     */
 
-    // Un requisito de esta función es usar Array.splice() para eliminar los elementos
+  // Un requisito de esta función es usar Array.splice() para eliminar los elementos
   findAndRemove: function (array, values) {
     /*
         Esta función acepta dos arrays, uno con datos (array) y el de values que 
@@ -282,7 +315,7 @@ const arraysUtils = {
                */
   },
 
- // Un requisito de esta función es usar la función Array.flatMap():
+  // Un requisito de esta función es usar la función Array.flatMap():
   toBinary: function (bytes) {
     /*
         Esta función recibe un array de "bytes", (números enteros de 1 byte o caracteres ASCII)
@@ -293,7 +326,7 @@ const arraysUtils = {
         */
   },
 
-  and: function(array, arrayMask){
+  and: function (array, arrayMask) {
     /*
     Esta función ejecuta una operación AND entre dos Arrays, uno de ellos
     será la máscara para el primero.
@@ -305,7 +338,7 @@ const arraysUtils = {
     */
   },
 
-  or: function(arrayA, arrayB){
+  or: function (arrayA, arrayB) {
     /*
     Esta función ejecuta una operación OR entre dos Arrays.
 
@@ -319,7 +352,7 @@ const arraysUtils = {
 
   },
 
-  xor: function(arrayA, arrayB){
+  xor: function (arrayA, arrayB) {
     /*
     Esta función ejecuta una operación XOR entre dos Arrays.
 
@@ -334,7 +367,7 @@ const arraysUtils = {
 
 
   // Una condición de esta función es usar un Map()
-  intersection: function(arrayA, arrayB){
+  intersection: function (arrayA, arrayB) {
     /*
     
     Esta función retorna un array que es el resultado de hacer la intersección entre dos arrays de entrada. 
