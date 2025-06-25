@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 
-import {describe, expect, test, it, vi, beforeEach } from "vitest";
+import {describe, expect, test, it, vi, beforeEach, beforeAll } from "vitest";
 
 import * as alg from "../src/algoritmos.js"
 
@@ -267,5 +267,43 @@ describe('Retos', () => {
      expect(alg.sumMultiples(numbers,10)).toBe(23);
      expect(alg.sumMultiples(numbers,16)).toBe(60);
     });
+  });
+});
+
+
+
+describe('Patrones de diseño', () => {
+
+  describe('Builder pattern', () => {
+    let car;
+
+    beforeAll(() => {
+      car = new alg.CarBuilder("Toyota", "Camry")
+        .setYear(2021)
+        .setColor("Red")
+        .setEngine("V6")
+        .build();
+    });
+
+    test('CarBuilder debe retornar tipo Car', () => {
+      expect(car).toBeInstanceOf(alg.Car);
+    });
+    test('CarBuilder debe tener los datos adecuados', () => {
+      expect(car.toString()).toBe("2021 Toyota Camry in Red with a V6 engine")
+    });
+  });
+
+  describe('Singleton pattern', () => {
+    let single, single2;
+
+    beforeAll(() => {
+      single = new alg.Singleton();
+      single2 = new alg.Singleton();
+    });
+
+    test('single y single 2 deben ser el mismo objeto', () => {
+      expect(single).toBe(single2);
+    });
+
   });
 });

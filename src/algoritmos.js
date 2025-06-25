@@ -10,7 +10,11 @@ export {TicTacToeGetInitialState,
     MCGetUcb, MCTSearch, MCStateToString, MCGetRandomMove,
 
     middleOfArray, 
-    sumMultiples
+    sumMultiples,
+
+    Car,
+    CarBuilder,
+    Singleton
 }
 
 /**
@@ -359,3 +363,63 @@ Por ejemplo: sumMultiples([3,5],10) retorna 23, ya que suma 3,5,6,9 que son los
 múltiplos de 3 y 5
 */
 }
+
+
+
+
+/*
+Bloque 4: Patrones de diseño
+*/
+
+class Car {
+    constructor(builder) {
+      this.make = builder.make;
+      this.model = builder.model;
+      this.year = builder.year;
+      this.color = builder.color;
+      this.engine = builder.engine;
+    }
+  
+    toString() {
+      return `${this.year} ${this.make} ${this.model} in ${this.color} with a ${this.engine} engine`;
+    }
+  }
+
+class CarBuilder {
+
+    /**
+     Acaba de completar esta clase de manera que permita crear un Car
+     paso a paso. 
+
+     Debe permitir ejecutar esto:
+     const car = new CarBuilder("Toyota", "Camry")
+                    .setYear(2021)
+                    .setColor("Red")
+                    .setEngine("V6")
+                    .build();
+
+
+        y que retorne un objeto completo de tipo Car
+     */
+
+    constructor(make,model){
+
+    }
+
+    build() {
+        return new Car(this);
+      }
+}
+
+
+class Singleton {
+    /*
+    Completar esta clase de manera que garantice que en el programa sólo
+    se ha instanciado un objeto de esa clase
+    */
+    constructor(){
+
+    }
+}
+
+
