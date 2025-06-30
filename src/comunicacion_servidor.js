@@ -10,6 +10,8 @@ async function getData(url){
     */
 }
 
+
+
 function getDataCache(url){
     /*
     Debe retornar otra función para obtener los datos de la url indicada en esta función.
@@ -21,6 +23,7 @@ function getDataCache(url){
 
 
 async function getImg(url){
+    
     /*
     Esta función acepta una URL de una imagen y retorna la URL a un blob de la misma. 
     Puede ser útil para pedir imágenes que están protegidas con una ApiKey o AccessToken...
@@ -38,7 +41,7 @@ async function sendForm(form,url){
 async function sendFormJSON(form,url){
     /*
     Esta función acepta un formulario del DOM y envía por POST los datos en formato JSON
-    Retorna la respuesta del servidor en formato JSON. Se supone que responde lo mismo que le enviamos
+    Retorna la respuesta del servidor en formato JSON. Se supone que el servidor responde lo mismo que le enviamos.
     Internamente usará FormData y fetch
     Cuando enviamos un JSON hay que especificar en los headers "Content-type": "application/json; charset=UTF-8"
     */
@@ -54,3 +57,4 @@ function generateURL(url,searchParams){
     Pista: Te irá mejor si usas URLSearchParams
     */
 }
+

@@ -11,6 +11,10 @@ export {TicTacToeGetInitialState,
 
     middleOfArray, 
     sumMultiples,
+    MinesWeeper ,
+    cifrasYLetras,
+    findSquares,
+    checkBrackets,
 
     Car,
     CarBuilder,
@@ -355,6 +359,7 @@ function middleOfArray(array){
     */
 }
 
+// Dificultad: Sencillo
 function sumMultiples(numbers,limit){
 /*
 Esta función acepta una lista de números y retorna la suma de los 
@@ -364,6 +369,56 @@ múltiplos de 3 y 5
 */
 }
 
+// Dificultad: Media
+function MinesWeeper(board,position){
+/*
+A partir de un tablero de buscaminas de cualquier tamaño y una posición en formato {x:1,y:1} 
+retornar '💣' si hay mina, o la cantidad de minas que hay a su alrededor. 
+
+Observa los tests para ver el formato del tablero con 0s y 1s para indicar si hay o no mina.
+*/
+}
+
+// Dificultad: Media
+function cifrasYLetras(numeros,resultado){
+/*
+Esta función acepta un array con un número arbitrario de números y un resultado numérico
+Debe retornar un objeto como este:
+
+{
+    exact: true,
+    operations: ['+','*','-']
+}
+
+El objeto indicará que, sin mover los números de posición y usando los operadores indicados
+de entre los disponibles (+, -, x, /) y usando el orden de operadores indicado (no el indicado
+en las matemáticas) da un resultado exacto o no y la lista de operadores.
+
+En el ejemplo la podriamos llamar así:  cifrasYLetras([5,4,2,1],17);
+Eso querría decir que (5+4)*2-1 = 17 
+Esos paréntesis se ponen en la explicación porque si pusiéramos si ellos en una calculadora
+multiplicaríamos primero, pero queremos el orden exacto del array. 
+*/
+}
+
+// Dificultad: Difícil
+function findSquares(points){
+    /*
+    Dada una lista de puntos de longitud arbitraria, detectar si 4 de ellos forman
+    un cuadrado. Los puntos son [x,y] y sólo tendrán valores naturales. 
+    Retornará true si encuentra un cuadrado y false si no.
+
+    Ejemplo: [[0, 0], [2, 0], [1, 1], [0, -1], [-1, -1], [0, 2], [0, 1], [1,0]] -> true
+    */
+}
+
+function checkBrackets(string){
+    /*
+    Esta funció recibe una string con brackets [] y debe retornar si todos los que 
+    abren cierran correctamente.
+    Ejemplo: ababa[abab]baba[a[b]a[[a]]]  -> true
+    */
+}
 
 
 

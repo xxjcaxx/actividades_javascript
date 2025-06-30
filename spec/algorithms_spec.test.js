@@ -267,7 +267,56 @@ describe('Retos', () => {
      expect(alg.sumMultiples(numbers,10)).toBe(23);
      expect(alg.sumMultiples(numbers,16)).toBe(60);
     });
+
   });
+  describe('Intermedios', () => {
+    test('MinesWeeper debería retornar mina o número de minas', () => {
+      expect(alg.MinesWeeper([[0,0,0],[0,1,0],[1,1,1]],{x:1,y:1})).toBe("💣");
+      expect(alg.MinesWeeper([[0,0,0],[0,1,0],[1,1,1]],{x:0,y:0})).toBe(1);
+      expect(alg.MinesWeeper([[0,0,0],[0,1,0],[1,1,1]],{x:0,y:1})).toBe(3);
+    });
+    test('cifrasYLetras debería retornar si se puede hacer la operación', () => {
+      const res = alg.cifrasYLetras([5, 4, 2, 1], 17)
+      expect(res.exact).toBe(true)
+      expect(res.operations.join('')).toBe('+*-') // Ejemplo exacto: (5+4)*2-1 = 17
+      const res2 = alg.cifrasYLetras([1, 1, 1], 10)
+      expect(res.exact).toBe(false)
+      expect(res.operations).toBeDefined()
+    });
+  });
+  describe('Difícil', () => {
+    test('findSquares debería retornar si hay cuadrado', () => {
+      expect(alg.findSquares([[0, 0], [2, 0], [1, 1], [0, -1], [-1, -1], [0, 2], [0, 1], [1,0]])).toBe(true);
+      expect(alg.findSquares([[0, 0], [0, 1], [1, 0], [1, 1]])).toBe(true); // cuadrado claro
+      expect(alg.findSquares([[0, 0], [1, 1], [1, 0]])).toBe(false); // tres puntos
+      expect(alg.findSquares([[0, 0], [2, 1], [3, 3], [5, 5], [1, 2]])).toBe(false); // no cuadrados
+      expect(alg.findSquares([[0, 0], [2, 0], [1, 1], [0, -1], [-1, -1], [0, 2], [0, 1], [1, 0]])).toBe(true);
+      expect(alg.findSquares(
+        [ 
+        [0, 0], [0, 1], [1, 0], [1, 1], // cuadrado 1
+        [2, 2], [2, 3], [3, 2], [3, 3]  // cuadrado 2
+        ]
+        )).toBe(true);
+      expect(alg.findSquares([[1, 1], [2, 2], [3, 1], [2, 0]])).toBe(true); // no alineado
+    });
+  });
+  test('checkBrackets debería retornar si están balanceados', () => { 
+    expect(alg.checkBrackets("[]")).toBe(true);
+    expect(alg.checkBrackets("()[]{}")).toBe(true);
+    expect(alg.checkBrackets("(]")).toBe(false);
+    expect(alg.checkBrackets("([)]")).toBe(false);
+    expect(alg.checkBrackets("{[]}")).toBe(true);
+    expect(alg.checkBrackets('ababa[abab]baba[a[b]a[[a]]]')).toBe(true);
+    expect(alg.checkBrackets('ababa]')).toBe(false);
+    expect(alg.checkBrackets('ababa[[a]')).toBe(false);
+    expect(alg.checkBrackets('')).toBe(true);
+    expect(alg.checkBrackets('solo texto plano')).toBe(true);
+    expect(alg.checkBrackets('texto [con [muchos] brackets]]')).toBe(false);
+    expect(alg.checkBrackets('[a[b[c[d[e]]]]]')).toBe(true);
+    expect(alg.checkBrackets('[[a[b]')).toBe(false);
+    expect(alg.checkBrackets('a]b[c]')).toBe(false);
+  });
+    
 });
 
 
