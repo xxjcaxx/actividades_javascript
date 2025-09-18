@@ -247,7 +247,12 @@ describe("Javascript Básico", function () {
       expect(Array.isArray(result)).toBe(true);
 
       // Verificar que cada elemento en el array es un objeto con las propiedades correctas
-      
+          expect(result).toEqual([
+          { time: { day: 2, hour: 0 }, t: 24, h: 52 },
+          { time: { day: 1, hour: 1 }, t: 24, h: 50 }
+          ])
+    });
+
     });
 
     test("createClimateDataMatrix debe retornar las horas con temperatura superior al threshold", function () {
