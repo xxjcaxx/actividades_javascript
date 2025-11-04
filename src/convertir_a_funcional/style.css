@@ -1,0 +1,77 @@
+div {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    max-width: 600px;
+    margin: 20px auto;
+    font-family: "Segoe UI", Roboto, sans-serif;
+    color: #333;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  div:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  }
+  
+  div h2 {
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    color: #1e293b;
+  }
+  
+  div h3 {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 16px;
+  }
+  
+  div h4 {
+    font-size: 1rem;
+    margin-top: 16px;
+    color: #0f172a;
+    border-left: 4px solid #0ea5e9;
+    padding-left: 8px;
+  }
+  
+  ul {
+    margin: 8px 0 16px 20px;
+    padding: 0;
+  }
+  
+  ul li {
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+  
+  .problems li {
+    color: #b91c1c;
+  }
+  
+  .details li {
+    color: #0f766e;
+  }
+  
+
+  .favorita {
+    border: 2px solid #f59e0b; /* borde dorado/anaranjado */
+    box-shadow: 0 6px 25px rgba(245, 158, 11, 0.3);
+    background: linear-gradient(135deg, #fff8e1, #fff);
+    position: relative;
+  }
+  
+  .favorita::before {
+    content: "★ Favorita";
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: #f59e0b;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  

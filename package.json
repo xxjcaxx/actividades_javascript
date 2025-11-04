@@ -22,8 +22,9 @@
 
         "webtest:chess": "vitest spec/chess_spec.test.js --ui",
 
-        "webtest:sudoku": "vitest spec/sudoku_spec.test.js --ui"
+        "webtest:sudoku": "vitest spec/sudoku_spec.test.js --ui",
 
+        "webtest:convert": "vitest spec/convert_functional_spec.test.js --ui"
     },
 
     "devDependencies": {
