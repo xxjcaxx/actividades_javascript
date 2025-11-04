@@ -105,6 +105,15 @@ describe("Convert to Functional", () => {
         expect(newFavorites2.has("http://data.food.gov.uk/food-alerts/id/xxxxxxxxxxxxxx")).toBe(true);
         expect(newFavorites2.has("http://data.food.gov.uk/food-alerts/id/FSA-PRIN-01-2018")).toBe(true);
       });
+      test("la función markFavorites añadirá o quitará la clase favorite al div", ()=>{
+        const div = document.createElement("div");
+        div.dataset.id = "http://data.food.gov.uk/food-alerts/id/FSA-PRIN-01-2018";
+        const divs = [div];
+        const exampleFavorites = new Set(["http://data.food.gov.uk/food-alerts/id/FSA-PRIN-01-2018"])
+        const markFavoritesFunction = convert.markFavorites(exampleFavorites);
+        markFavoritesFunction(divs);
+        expect(div.classList.contains("favorita")).toBe(true);
+      });
   });
 
   describe("Render Alertas", () => {
