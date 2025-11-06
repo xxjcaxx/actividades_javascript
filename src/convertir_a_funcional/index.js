@@ -3,7 +3,10 @@
 /*
 En el fichero spec/convert_functional_spec.test.js puedes ver los tests que deben pasar y las funciones que hay que crear
 
+Las funciones testables son estas:
+getAlerts, mapFavorites, toggleToFavorites, createAlertDiv, createAlertsDivs, addClickListeners, markFavorites
 
+Y también la de DOMContentLoaded que construya la web a partir de estas. 
 */
 
 let alertasFavoritas = [];
