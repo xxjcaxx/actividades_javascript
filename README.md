@@ -6,7 +6,7 @@ Clona este repositorio o descarga la carpeta.
 Para que funcione, hay que instalar las suite de tests **Vitest**. Como está especificado en **package.json**, sólo tienes que ejecutar:
 > npm install
 
-Asegúrate de tener instalado nodejs y npm en una de las últimas versiones. Yo lo he probado todo en Firefox 119, no garantizo que funcione en navegadores más antiguos.
+Asegúrate de tener instalado nodejs y npm en una de las últimas versiones. Yo lo he probado todo en Firefox >=119, no garantizo que funcione en navegadores más antiguos.
 
 ## Recomendaciones
 Una vez preparado, dentro de src hay algunos ficheros javascript con funciones inacabadas. La tarea del alumno es acabar esas funciones y ver si pasan el test.
