@@ -1,5 +1,6 @@
 export {
   createArraySomeTypes,
+  istruthy,
   convert,
   getPrimes,
   min,

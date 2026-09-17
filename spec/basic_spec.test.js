@@ -2,6 +2,7 @@ import {describe, expect, test, it } from "vitest";
 
 import {
   createArraySomeTypes,
+  istruthy,
   convert,
   getPrimes,
   min,
@@ -52,6 +53,11 @@ describe("Javascript Básico", function () {
       expect(createArraySomeTypes()[6] === undefined).toBe(true);
       expect(isNaN(createArraySomeTypes(7))).toBe(true);
       expect(createArraySomeTypes()[8] instanceof Function).toBe(true);
+    });
+    test("Debe retornar si es truthy", function(){
+      expect(istruthy(1)).toBe(true);
+      expect(istruthy(0)).toBe(false);
+      expect(istruthy("1")).toBe(true);
     });
     test("Debe retornar  la variable convertida", function () {
       expect(convert(1, "string")).toBe("1");
