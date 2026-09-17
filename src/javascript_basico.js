@@ -41,6 +41,10 @@ function createArraySomeTypes() {
   // return [1,"aa",false,[1,2,3,4],{a:1,b:2}, null, undefined, NaN, function a(){return "a";}];
 }
 
+function istruthy(variable){
+  // Retorna true si la variable és truthy
+}
+
 function convert(data, type) {
   // Debe convertir el dato de entrada en el tipo deseado.
   // Depende del tipo de destino debe hacer algo distinto. Puedes poner un case
