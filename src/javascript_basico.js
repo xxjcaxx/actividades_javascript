@@ -4,6 +4,7 @@ export {
   convert,
   getPrimes,
   min,
+  crearPerfilUsuario,
   applyFunction,
   multiplicar,
   createMapFunction,
@@ -45,6 +46,22 @@ function createArraySomeTypes() {
 function istruthy(variable){
   // Retorna true si la variable és truthy
 }
+
+function crearPerfilUsuario(nombre, edad, esSocio) {
+  /*
+La función debe devolver un objeto con las siguientes propiedades: 
+
+nombre: El valor recibido. 
+
+edad: El valor recibido. 
+
+esSocio: El valor recibido. 
+
+tipoEdad: Un string que sea "adulto" si la edad es mayor o igual a 18, o "menor" si es inferior a 18.
+*/
+    }
+
+export { crearPerfilUsuari };
 
 function convert(data, type) {
   // Debe convertir el dato de entrada en el tipo deseado.

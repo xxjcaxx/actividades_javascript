@@ -6,6 +6,7 @@ import {
   convert,
   getPrimes,
   min,
+  crearPerfilUsuario,
   applyFunction,
   multiplicar,
   createMapFunction,
@@ -59,6 +60,9 @@ describe("Javascript Básico", function () {
       expect(istruthy(0)).toBe(false);
       expect(istruthy("1")).toBe(true);
     });
+
+
+
     test("Debe retornar  la variable convertida", function () {
       expect(convert(1, "string")).toBe("1");
       expect(convert(1, "number")).toBe(1);
@@ -89,6 +93,35 @@ describe("Javascript Básico", function () {
       expect(convert({ a: 1, b: 2 }, "object")).toEqual({ a: 1, b: 2 });
     });
   });
+
+  describe('Exercici: crearPerfilUsuari', () => {
+    
+    test('ha de crear correctament el perfil d\'un adult no soci', () => {
+        const resultat = crearPerfilUsuari('Laura', 25, false);
+        
+        expect(resultat).toEqual({
+            nom: 'Laura',
+            edat: 25,
+            esSocio: false,
+            tipusEdat: 'adult'
+        });
+        expect(typeof resultat.nom).toBe('string');
+        expect(typeof resultat.edat).toBe('number');
+        expect(typeof resultat.esSocio).toBe('boolean');
+    });
+
+    test('ha de crear correctament el perfil d\'un menor soci', () => {
+        const resultat = crearPerfilUsuari('Marc', 16, true);
+        
+        expect(resultat).toEqual({
+            nom: 'Marc',
+            edat: 16,
+            esSocio: true,
+            tipusEdat: 'menor'
+        });
+    });
+
+});
 
   describe(" Estructuras de control y operadores", function () {
     test("getPrimes retorna los números primos en el rango comprendido entre start y end", function () {
